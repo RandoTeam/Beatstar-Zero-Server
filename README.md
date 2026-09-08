@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎵 Beatstar-Zero-Server
+# Beatstar-Zero-Server
 
 **The In-Process, Zero-Server Offline Preservation Engine for Beatstar (Android / ARM64)**
 
@@ -28,7 +28,7 @@
 
 ---
 
-## 🌟 What is Beatstar-Zero-Server?
+## What is Beatstar-Zero-Server?
 
 Normally, mobile games rely on remote game servers for everything: logging in, fetching song lists, downloading track charts, and tracking progress. When servers go down or you're offline (in an airplane, subway, or traveling), the game becomes completely unplayable.
 
@@ -36,9 +36,9 @@ Normally, mobile games rely on remote game servers for everything: logging in, f
 
 Through Frida dynamic binary instrumentation and native ELF patching, the game's network requests never leave your device. An embedded QuickJS engine emulates the entire backend directly in local memory.
 
-### 📊 How Does It Compare?
+### Feature Comparison
 
-| Feature | 🌐 Traditional Private Servers | ⚡ Beatstar-Zero-Server |
+| Feature | Traditional Private Servers | Beatstar-Zero-Server |
 | :--- | :---: | :---: |
 | **Hosting Requirement** | External PC / Cloud VPS | **None** (Runs inside the phone's process) |
 | **Internet Connection** | Required (Wi-Fi or Mobile Data) | **100% Offline** (Airplane Mode compatible) |
@@ -48,7 +48,7 @@ Through Frida dynamic binary instrumentation and native ELF patching, the game's
 
 ---
 
-## ⚙️ How It Works (Under the Hood)
+## Architecture & Mechanics
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            Beatstar Unity Client                            │
@@ -82,11 +82,11 @@ Through Frida dynamic binary instrumentation and native ELF patching, the game's
 
 ---
 
-## 🚀 Quick Start (Building Your Offline Game)
+## Quick Start (Building Your Offline Game)
 
 We've designed the build system to be completely automated. Follow these 4 simple steps:
 
-### 📋 Prerequisites
+### Prerequisites
 
 Before starting, ensure you have the following installed on your PC:
 - **[Python 3.9+](https://www.python.org/)** with `lief`:
@@ -98,7 +98,7 @@ Before starting, ensure you have the following installed on your PC:
 
 ---
 
-### 📦 Step 1: Clone and Install Dependencies
+### Step 1: Clone and Install Dependencies
 
 ```bash
 git clone https://github.com/RandoTeam/Beatstar-Zero-Server.git
@@ -109,7 +109,7 @@ cd ../..
 
 ---
 
-### 📂 Step 2: Add Your Game Files
+### Step 2: Add Your Game Files
 
 1. **Base Game APK**:  
    Obtain an untouched ARM64 `Beatstar.apk` (e.g., from your own device backup or archive mirrors) and place it inside:
@@ -125,7 +125,7 @@ cd ../..
 
 ---
 
-### 🔨 Step 3: Run the 1-Click Build Pipeline
+### Step 3: Run the 1-Click Build Pipeline
 
 Run the automated Python builder:
 ```bash
@@ -133,11 +133,11 @@ python build_offline.py
 ```
 
 **The script will automatically:**
-- 🔹 Compile the TypeScript server into `file.js`.
-- 🔹 Extract and prepare the native Frida gadget payload.
-- 🔹 Patch `libmain.so` ELF headers to inject the gadget loader.
-- 🔹 Bundle the offline CMS and asset configs into the APK package.
-- 🔹 Align and sign the package with a debug keystore.
+- Compile the TypeScript server into `file.js`.
+- Extract and prepare the native Frida gadget payload.
+- Patch `libmain.so` ELF headers to inject the gadget loader.
+- Bundle the offline CMS and asset configs into the APK package.
+- Align and sign the package with a debug keystore.
 
 Your ready-to-install package will appear at:
 ```
@@ -146,7 +146,7 @@ dist/Beatstar-Offline-arm64.apk
 
 ---
 
-### 📱 Step 4: Install & Enjoy
+### Step 4: Install & Play
 
 Install the APK to your Android device via ADB:
 ```bash
@@ -156,19 +156,19 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 ---
 
-## 💖 Support the Project (Tip Jar)
+## Support the Project (Tip Jar)
 
 **Beatstar-Zero-Server** is an independent, non-profit community project built for game preservation. All code and tools are 100% free and open-source.
 
 If this software has been useful to you or you'd like to support continued reverse-engineering research and maintenance, feel free to **buy the developer a coffee** via our cryptocurrency tip jar:
 
-👉 **[View Supported Networks & Wallet Addresses in DONATION.md](DONATION.md)**
+→ **[View Supported Networks & Wallet Addresses in DONATION.md](DONATION.md)**
 
 *(Bitcoin Native SegWit, Ethereum, USDT ERC-20, USDC ERC-20)*
 
 ---
 
-## 🛡️ Legal & Fair Use Disclaimer
+## Legal & Fair Use Disclaimer
 
 - **Preservation & Research**: This project was developed as a software engineering case study in game preservation, binary instrumentation, and reverse engineering.
 - **No Trademark Infringement**: Beatstar and SpaceApe Games are trademarks of Space Ape Ltd. This project is unaffiliated with, unauthorized by, and not endorsed by Space Ape Ltd or Supercell.
@@ -176,7 +176,7 @@ If this software has been useful to you or you'd like to support continued rever
 
 ---
 
-## 🤝 Credits & Acknowledgments
+## Credits & Acknowledgments
 
 This project stands on the shoulders of the community:
 - **[ExternalAddress4401](https://github.com/ExternalAddress4401)** & the Beatstar Modding Community for early Frida scripts and protocol analysis.

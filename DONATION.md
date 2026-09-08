@@ -1,4 +1,4 @@
-# 💖 Support Beatstar-Zero-Server
+# Support Beatstar-Zero-Server
 
 **Beatstar-Zero-Server** is an independent, non-profit, open-source game preservation project. 
 
@@ -8,7 +8,7 @@ If this project helped you preserve your rhythm game experience, or if you simpl
 
 ---
 
-## ☕ Tip Jar Addresses
+## Tip Jar Addresses
 
 | Currency | Network | Address |
 | :--- | :--- | :--- |
@@ -19,7 +19,7 @@ If this project helped you preserve your rhythm game experience, or if you simpl
 
 ---
 
-## ⚠️ Important Sending Notes
+## Important Sending Notes
 
 - **Network Verification**: Please verify the exact asset and network before sending funds. **USDT and USDC must be sent via the Ethereum (ERC-20) network**. Sending via other networks (e.g. TRC-20, BSC, Solana) to this address may result in permanent loss of funds.
 - **Strictly Voluntary & Non-Refundable**: Donations are entirely voluntary and non-refundable personal gifts.
