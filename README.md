@@ -152,7 +152,10 @@ Install the APK to your Android device via ADB:
 ```bash
 adb install dist/Beatstar-Offline-arm64.apk
 ```
-*Launch the game, wait 5 seconds for the initial local bootstrap, and play anywhere without an internet connection!*
+> [!NOTE]
+> **First Launch Bootstrap Notice**:  
+> On the **first launch only**, the app will display a loading screen while unpacking the embedded song assets (~1.5 GB) into your device's internal storage. This initial bootstrap takes between **1 to 3 minutes** depending on your phone's storage speed and processor.  
+> **Do not close or force-stop the app during this first bootstrap.** Subsequent launches will be near-instant (0–3 seconds).
 
 ---
 
