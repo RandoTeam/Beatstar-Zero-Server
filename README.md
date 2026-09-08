@@ -10,6 +10,7 @@
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/)
 [![Architecture](https://img.shields.io/badge/Arch-ARM64--v8a-blueviolet?style=for-the-badge)](https://developer.android.com/ndk/guides/abis)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Tip Jar](https://img.shields.io/badge/Tip%20Jar-Crypto-F7931A?style=for-the-badge&logo=bitcoin&logoColor=white)](DONATION.md)
 
 <p align="center">
   <i>Turn your mobile rhythm game into a permanent, self-contained handheld console experience.</i><br>
@@ -152,6 +153,18 @@ Install the APK to your Android device via ADB:
 adb install dist/Beatstar-Offline-arm64.apk
 ```
 *Launch the game, wait 5 seconds for the initial local bootstrap, and play anywhere without an internet connection!*
+
+---
+
+## 💖 Support the Project (Tip Jar)
+
+**Beatstar-Zero-Server** is an independent, non-profit community project built for game preservation. All code and tools are 100% free and open-source.
+
+If this software has been useful to you or you'd like to support continued reverse-engineering research and maintenance, feel free to **buy the developer a coffee** via our cryptocurrency tip jar:
+
+👉 **[View Supported Networks & Wallet Addresses in DONATION.md](DONATION.md)**
+
+*(Bitcoin Native SegWit, Ethereum, USDT ERC-20, USDC ERC-20)*
 
 ---
 
