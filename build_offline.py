@@ -34,38 +34,87 @@ def main():
     dist_dir = os.path.join(project_root, "dist")
     os.makedirs(dist_dir, exist_ok=True)
     
-    base_apk = os.path.join(project_root, "client_apk", "Beatstar_Mod_ARM64.apk")
-    if not os.path.exists(base_apk):
-        base_apk = os.path.join(project_root, "assets", "apk", "Beatstar.apk")
+    base_apk = None
+    candidate_apks = [
+        os.path.join(project_root, "input", "Beatstar.apk"),
+        os.path.join(project_root, "client_apk", "Beatstar_Mod_ARM64.apk"),
+        os.path.join(project_root, "assets", "apk", "Beatstar.apk")
+    ]
+    for cand in candidate_apks:
+        if os.path.exists(cand):
+            base_apk = cand
+            break
+    if not base_apk:
+        print("[!] Fatal Error: Base APK not found. Please place Beatstar.apk into 'input/' directory.")
+        sys.exit(1)
         
     script_dir = os.path.join(project_root, "tools", "Beatstar-Script-Android")
     built_script_file = os.path.join(script_dir, "file.js")
     gadget_script_file = os.path.join(script_dir, "libfrida-gadget.script.so")
     
-    temp_assets_dir = os.path.join(project_root, "temp_extracted_assets")
-    if not os.path.exists(temp_assets_dir):
-        temp_assets_dir = os.path.join(project_root, "android_bundle", "assets")
+    temp_assets_dir = None
+    candidate_asset_dirs = [
+        os.path.join(project_root, "assets_cache"),
+        os.path.join(project_root, "temp_extracted_assets"),
+        os.path.join(project_root, "android_bundle", "assets")
+    ]
+    for cand in candidate_asset_dirs:
+        if os.path.exists(cand):
+            items = [f for f in os.listdir(cand) if not f.startswith("PUT_")]
+            if items:
+                temp_assets_dir = cand
+                break
+    if not temp_assets_dir:
+        temp_assets_dir = os.path.join(project_root, "temp_extracted_assets")
         
     raw_apk = os.path.join(dist_dir, "Beatstar-Offline-raw2.apk")
     aligned_apk = os.path.join(dist_dir, "Beatstar-Offline-aligned.apk")
     final_signed_apk = os.path.join(dist_dir, "Beatstar-Offline-arm64.apk")
     
-    build_tools_root = r"C:\Users\Ilia V\AppData\Local\Android\Sdk\build-tools"
-    bt_version = "37.0.0"
-    if not os.path.exists(os.path.join(build_tools_root, bt_version)):
-        bt_version = "35.0.0"
-    build_tools_dir = os.path.join(build_tools_root, bt_version)
+    apksigner_path = shutil.which("apksigner") or shutil.which("apksigner.bat")
+    zipalign_path = shutil.which("zipalign") or shutil.which("zipalign.exe")
     
-    apksigner_path = os.path.join(build_tools_dir, "apksigner.bat")
-    zipalign_path = os.path.join(build_tools_dir, "zipalign.exe")
+    if not apksigner_path or not zipalign_path:
+        sdk_candidates = [
+            os.environ.get("ANDROID_HOME"),
+            os.environ.get("ANDROID_SDK_ROOT"),
+            os.path.expanduser("~/AppData/Local/Android/Sdk"),
+            r"C:\Users\Ilia V\AppData\Local\Android\Sdk",
+            "/usr/lib/android-sdk",
+            "/opt/android-sdk"
+        ]
+        for sdk_root in sdk_candidates:
+            if sdk_root and os.path.exists(sdk_root):
+                bt_root = os.path.join(sdk_root, "build-tools")
+                if os.path.exists(bt_root):
+                    versions = sorted(os.listdir(bt_root), reverse=True)
+                    for v in versions:
+                        v_dir = os.path.join(bt_root, v)
+                        cand_signer = os.path.join(v_dir, "apksigner.bat" if os.name == "nt" else "apksigner")
+                        cand_align = os.path.join(v_dir, "zipalign.exe" if os.name == "nt" else "zipalign")
+                        if os.path.exists(cand_signer) and not apksigner_path:
+                            apksigner_path = cand_signer
+                        if os.path.exists(cand_align) and not zipalign_path:
+                            zipalign_path = cand_align
+                        if apksigner_path and zipalign_path:
+                            break
+                    if apksigner_path and zipalign_path:
+                        break
+
+    if not apksigner_path or not zipalign_path:
+        print("[!] Fatal Error: Android SDK build-tools (zipalign / apksigner) not found.")
+        print("    Please install Android SDK Build-Tools or add them to your PATH.")
+        sys.exit(1)
+
     debug_keystore = os.path.join(script_dir, "debug.keystore")
     if not os.path.exists(debug_keystore):
         debug_keystore = os.path.expanduser("~/.android/debug.keystore")
         
     print(f"[*] Base APK: {base_apk}")
     print(f"[*] Assets directory: {temp_assets_dir}")
-    print(f"[*] Build tools: {build_tools_dir}")
-    print(f"[*] Keystore: {debug_keystore}")
+    print(f"[*] apksigner: {apksigner_path}")
+    print(f"[*] zipalign:  {zipalign_path}")
+    print(f"[*] Keystore:  {debug_keystore}")
     
     # 1. Compile Embedded Script & Embed into Native Frida Gadget Bootstrap
     print("\n[Step 1/5] Compiling TypeScript embedded mod backend...")
@@ -95,7 +144,31 @@ def main():
     
     with open(built_script_file, "rb") as f:
         raw_script_bytes = f.read()
-    
+
+    # Load / decompress native Frida Gadget binary if available
+    import lzma
+    gadget_so_bytes = None
+    gadget_so_path = os.path.join(project_root, "tools", "binaries", "libfrida-gadget.so")
+    gadget_xz_path = os.path.join(project_root, "tools", "binaries", "frida-gadget.so.xz")
+    if not os.path.exists(gadget_xz_path):
+        gadget_xz_path = os.path.join(project_root, "HIbeatz_Project", "frida-gadget.so.xz")
+
+    if os.path.exists(gadget_so_path):
+        with open(gadget_so_path, "rb") as f:
+            gadget_so_bytes = f.read()
+    elif os.path.exists(gadget_xz_path):
+        print("  -> Decompressing frida-gadget.so.xz via built-in lzma...")
+        with lzma.open(gadget_xz_path, "rb") as f:
+            gadget_so_bytes = f.read()
+        os.makedirs(os.path.dirname(gadget_so_path), exist_ok=True)
+        with open(gadget_so_path, "wb") as f:
+            f.write(gadget_so_bytes)
+    else:
+        alt_so = os.path.join(project_root, "HIbeatz_Project", "libfrida-gadget.so")
+        if os.path.exists(alt_so):
+            with open(alt_so, "rb") as f:
+                gadget_so_bytes = f.read()
+
     # Valid Frida Gadget configuration
     gadget_config_obj = {
         "interaction": {
@@ -116,15 +189,28 @@ def main():
         base_entries = [e for e in z_in.infolist() if not e.filename.startswith("META-INF/")]
         print(f"[*] Base APK contains {len(base_entries)} files (excluding signatures).")
         
+        gadget_so_written = False
+        gadget_script_written = False
+        gadget_config_written = False
+
         with zipfile.ZipFile(raw_apk, "w", compression=zipfile.ZIP_DEFLATED, allowZip64=True) as z_out:
             print("  -> Writing engine binaries, patching ELF DT_NEEDED, and embedding Frida script...")
             for entry in base_entries:
-                if entry.filename == "lib/arm64-v8a/libfrida-gadget.script.so":
+                if entry.filename == "lib/arm64-v8a/libfrida-gadget.so":
+                    if gadget_so_bytes:
+                        z_out.writestr("lib/arm64-v8a/libfrida-gadget.so", gadget_so_bytes)
+                    else:
+                        z_out.writestr(entry, z_in.read(entry.filename))
+                    gadget_so_written = True
+                    files_added += 1
+                elif entry.filename == "lib/arm64-v8a/libfrida-gadget.script.so":
                     z_out.writestr("lib/arm64-v8a/libfrida-gadget.script.so", gadget_script_bytes)
+                    gadget_script_written = True
                     files_added += 1
                     print("     [+] lib/arm64-v8a/libfrida-gadget.script.so embedded with full offline engine")
                 elif entry.filename == "lib/arm64-v8a/libfrida-gadget.config.so":
                     z_out.writestr("lib/arm64-v8a/libfrida-gadget.config.so", gadget_config_bytes)
+                    gadget_config_written = True
                     files_added += 1
                     print("     [+] lib/arm64-v8a/libfrida-gadget.config.so configured for script path")
                 elif entry.filename == "lib/arm64-v8a/libmain.so":
@@ -137,6 +223,20 @@ def main():
                     data = z_in.read(entry.filename)
                     z_out.writestr(entry, data)
                     files_added += 1
+
+            # Inject missing gadget binaries (essential for untouched base APKs)
+            if not gadget_so_written and gadget_so_bytes:
+                z_out.writestr("lib/arm64-v8a/libfrida-gadget.so", gadget_so_bytes)
+                files_added += 1
+                print("     [+] lib/arm64-v8a/libfrida-gadget.so newly injected into ARM64 library folder")
+            if not gadget_script_written:
+                z_out.writestr("lib/arm64-v8a/libfrida-gadget.script.so", gadget_script_bytes)
+                files_added += 1
+                print("     [+] lib/arm64-v8a/libfrida-gadget.script.so newly injected")
+            if not gadget_config_written:
+                z_out.writestr("lib/arm64-v8a/libfrida-gadget.config.so", gadget_config_bytes)
+                files_added += 1
+                print("     [+] lib/arm64-v8a/libfrida-gadget.config.so newly injected")
                     
             print("  -> Injecting fallback scripts and offline configurations...")
             z_out.writestr("assets/beatstar/script/override.js", raw_script_bytes)

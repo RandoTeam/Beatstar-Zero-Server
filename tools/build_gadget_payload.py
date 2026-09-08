@@ -12,9 +12,19 @@ def generate_gadget_script():
     print(f'[+] Standalone unencrypted engine payload: {len(raw_payload_json)} chars')
 
     # 2. Read the original Frida Gadget bootstrap script
-    bootstrap_path = 'frida_gadget_script.js'
-    if not os.path.exists(bootstrap_path):
-        bootstrap_path = 'archive/legacy_tools/frida_gadget_script.js'
+    bootstrap_candidates = [
+        'frida_gadget_script.js',
+        'tools/frida_gadget_script.js',
+        os.path.join(os.path.dirname(__file__), 'frida_gadget_script.js'),
+        'archive/legacy_tools/frida_gadget_script.js'
+    ]
+    bootstrap_path = None
+    for cand in bootstrap_candidates:
+        if os.path.exists(cand):
+            bootstrap_path = cand
+            break
+    if not bootstrap_path:
+        raise FileNotFoundError("Frida gadget bootstrap script not found in any expected paths.")
     with open(bootstrap_path, 'r', encoding='utf-8') as f:
         bootstrap = f.read()
 
