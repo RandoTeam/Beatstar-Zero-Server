@@ -48,20 +48,30 @@ Through Frida dynamic binary instrumentation and native ELF patching, the game's
 ---
 
 ## ⚙️ How It Works (Under the Hood)
-
-```mermaid
-graph TD
-    A[Beatstar Unity Client] -->|Native TCP/RPC| B[Loopback 127.0.0.1:3000]
-    A -->|Asset WebRequests| C[Loopback 127.0.0.1:5000]
-    
-    subgraph Inside App Process via Frida Gadget
-        B --> D[In-Process Sharpla Protobuf Server]
-        C --> E[In-Process HTTP CMS & Asset Server]
-        D --> F[Local ProfileStore & Dynamic Calendar]
-        E --> G[On-Device Cache Storage]
-    end
-    
-    H[OfflineHarden.ts Hooks] -.->|IL2CPP Guards| A
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            Beatstar Unity Client                            │
+│           (Native libil2cpp.so & libmain.so patched with DT_NEEDED)         │
+└──────────────────────┬───────────────────────────────┬──────────────────────┘
+                       │ Native TCP RPC                │ HTTP Asset WebRequests
+                       │ (Port 3000)                   │ (Port 5000)
+                       ▼                               ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│               In-Process Frida Gadget Sandbox (QuickJS Engine)              │
+│                                                                             │
+│   ┌───────────────────────────────┐   ┌─────────────────────────────────┐   │
+│   │       TcpGameServer.ts        │   │       HttpAssetServer.ts        │   │
+│   │  • SpaceApe Sharpla Protobuf  │   │  • CMS Content Delivery         │   │
+│   │  • Dynamic Seasons & Events   │   │  • Local Track Catalog          │   │
+│   │  • ProfileStore (Local JSON)  │   │  • Song Cover Provider          │   │
+│   └───────────────────────────────┘   └─────────────────────────────────┘   │
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                      OfflineHarden.ts (IL2CPP)                      │   │
+│   │  • InteractionLocker Guard        • Infinite Calendar Loop          │   │
+│   │  • Bundle Signature Bypass        • Coroutine Hang Watchdog         │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 1. **Native Injection**: During the build pipeline, the game's `libmain.so` is patched with `DT_NEEDED` to automatically load `libfrida-gadget.so` upon startup.
