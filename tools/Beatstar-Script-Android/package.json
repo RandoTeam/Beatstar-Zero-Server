@@ -1,0 +1,35 @@
+{
+  "scripts": {
+    "watch": "node_modules/.bin/frida-compile device/device.ts -o script.js -w",
+    "build": "node build.js",
+    "agent": "node_modules/.bin/frida-compile agent/agent.ts -o script.js -c -w",
+    "debug": "node_modules/.bin/frida-compile agent/debug.ts -o debug.js -c"
+  },
+  "dependencies": {
+    "@frida/assert": "^3.0.2",
+    "@frida/buffer": "^7.0.4",
+    "@frida/crypto": "^1.0.1",
+    "@frida/events": "^4.0.4",
+    "@frida/http": "^4.0.2",
+    "@frida/net": "^5.0.0",
+    "@frida/path": "^2.0.3",
+    "@frida/process": "^1.2.1",
+    "@frida/stream": "^1.0.2",
+    "@frida/string_decoder": "^2.0.0",
+    "@frida/timers": "^3.0.0",
+    "@frida/url": "^1.0.2",
+    "@frida/util": "^1.0.3",
+    "@types/frida-gum": "^19.0.0",
+    "assert-browserify": "^2.0.0",
+    "browserify-zlib": "^0.2.0",
+    "esbuild": "^0.17.18",
+    "frida-compile": "^19.0.4",
+    "frida-fs": "^7.0.0",
+    "frida-il2cpp-bridge": "^0.12.1",
+    "frida-java-bridge": "^7.0.12",
+    "pako": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
+  }
+}

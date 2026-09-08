@@ -1,0 +1,1 @@
+Place your UnityCache folder here (com.spaceapegames.beatstar/files/UnityCache). This is required for songs to play offline.
