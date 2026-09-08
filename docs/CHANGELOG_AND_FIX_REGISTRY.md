@@ -1684,3 +1684,9 @@ Custom songs did not work after multiple attempts. User authorized full removal.
   - Removed obsolete dump folders temp_binstar_lib/ (73.3 MB), temp_meta/ (98 MB), and temp_shakira/ (4.5 MB).
 - **Total Cleared**: 15,017 files, 7 directories, freeing 3.62 GB (3,711 MB) of disk space. All active build pipelines (build_offline.py, HIbeatz_Project/build_full_offline.py) verified intact.
 
+
+### 2026-09-08 13:05:00 (Local) - Universal Portable Build Pipeline Adaptation
+- **Context**: Portability adaptation of build_offline.py and build_gadget_payload.py for open-source GitHub distribution and local development compatibility.
+- **Modified Files**: build_offline.py, tools/build_gadget_payload.py.
+- **Changes**: Cascading APK detection (input/Beatstar.apk -> client_apk/ -> assets/apk/), cascading asset directory resolution (assets_cache/ -> temp_extracted_assets/ -> android_bundle/), dynamic Android SDK build-tools lookup (PATH -> ANDROID_HOME -> local SDK), built-in lzma decompression of frida-gadget.so.xz, and dynamic injection of missing ARM64 libraries for untouched vanilla APKs.
+- **Verification**: Verified root local pipeline resolves existing paths without alteration; verified export package decompresses ARM64 ELF header cleanly.
