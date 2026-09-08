@@ -61,6 +61,10 @@ let shim = {
         { name: "url", entry: "@frida/url/url.js" },
         { name: "crypto", entry: "crypto-browserify/index.js" },
         { name: "zlib", entry: "browserify-zlib/lib/index.js" },
+        {
+          name: "@externaladdress4401/beatstar-protobuf/responses",
+          entry: "@externaladdress4401/beatstar-protobuf/dist/responses/index.js",
+        },
       ];
       const shim = shims.find((el) => el.name == args.path);
       if (shim) {

@@ -38,7 +38,7 @@ export const hookProfile = () => {
             const populateProfile = (prof: any) => {
               if (!prof || prof.isNull()) return;
 
-              setFieldSafe(prof, "name", Il2Cpp.string(current.username || "IliaRus"));
+              setFieldSafe(prof, "name", Il2Cpp.string(current.username || "Player"));
               setFieldSafe(prof, "numGoldDiscBoxesOpened", 10);
 
               // NOTE: PlayerBasicInfoTO (Android dump L351684) only has:

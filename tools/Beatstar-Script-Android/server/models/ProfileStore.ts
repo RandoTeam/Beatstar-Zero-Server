@@ -67,8 +67,8 @@ export class ProfileStore {
   private static profile: UserProfile = {
     id: 1,
     uuid: "c0ffee00-1337-4bbf-8888-000000000001",
-    username: "IliaRus",
-    name: "IliaRus",
+    username: "Player",
+    name: "Player",
     country: "US",
     avatar: 1,
     banner: 1,

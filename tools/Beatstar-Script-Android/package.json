@@ -6,6 +6,7 @@
     "debug": "node_modules/.bin/frida-compile agent/debug.ts -o debug.js -c"
   },
   "dependencies": {
+    "@externaladdress4401/beatstar-protobuf": "^1.2.3",
     "@frida/assert": "^3.0.2",
     "@frida/buffer": "^7.0.4",
     "@frida/crypto": "^1.0.1",

@@ -7,6 +7,25 @@ Whenever the user asks to record, capture, or analyze logs, the agent must colle
 
 ... [Truncated rules] ...
 
+## 2026-09-08 14:30 - Open-Source Export: Privacy Hardening, Standalone Build Portability & Protobuf Dependencies
+
+**Rationale & Forensic Audit**:
+1. Nickname Anonymization: Default username and profile name previously defaulted to developer's handle `'IliaRus'`. Sanitized to generic `'Player'` in `ProfileStore.ts` and `hookProfile.ts`.
+2. Clean Standalone Build: Removed stale fallback paths to internal development directory `HIbeatz_Project` in `build_offline.py`, ensuring the export is 100% self-contained within its own directory tree.
+3. Protobuf Package Resolution: Added missing `@externaladdress4401/beatstar-protobuf: ^1.2.3` dependency to `package.json` and added graceful `@externaladdress4401/beatstar-protobuf/responses` path shim in `build.js` to bypass an upstream npm package.json exports wildcard typo, ensuring seamless `npm install` and `node build.js` on clean external clones.
+
+**Modifications**:
+1. `tools/Beatstar-Script-Android/server/models/ProfileStore.ts`:
+   - Line 70-71: `username: 'IliaRus'` -> `'Player'`, `name: 'IliaRus'` -> `'Player'`.
+2. `tools/Beatstar-Script-Android/customs/hookProfile.ts`:
+   - Line 41: `current.username || 'IliaRus'` -> `current.username || 'Player'`.
+3. `build_offline.py`:
+   - Lines 150-165: Pruned `HIbeatz_Project` fallback checks.
+4. `tools/Beatstar-Script-Android/package.json`:
+   - Added `"@externaladdress4401/beatstar-protobuf": "^1.2.3"`.
+5. `tools/Beatstar-Script-Android/build.js`:
+   - Lines 64-67: Added `shims` entry for `@externaladdress4401/beatstar-protobuf/responses`.
+
 ## 2026-09-08 11:47 - Beatstar: Date Resilience & Infinite Calendar Cycling Architecture
 
 **Rationale & Audit**:
@@ -1229,16 +1248,16 @@ Needed for ongoing development to instantly verify hook signatures against the 8
   - Native SongInfoElement.Setup was aborted by translation exceptions on custom/offline songs before reaching Difficulty.Setup(), leaving difficulty elements in uninitialized monochrome state.
 * **Previous values -> New values**:
   - Difficulty.Setup: not called on exception -> explicitly called with SongDifficulty
-  - aseColorTintables: default gray -> tinted with song's aseColor
+  -  aseColorTintables: default gray -> tinted with song's  aseColor
 
-## 2026-08-25 00:55 - Update user profile nickname to IliaRus
+### 2026-08-25 00:55 - Update user profile nickname to Player
 * **Files Modified**:
-  - 	ools/Beatstar-Script-Android/server/models/ProfileStore.ts (lines 69-70)
-  - 	ools/Beatstar-Script-Android/customs/hookProfile.ts (line 40)
+  - tools/Beatstar-Script-Android/server/models/ProfileStore.ts (lines 69-70)
+  - tools/Beatstar-Script-Android/customs/hookProfile.ts (line 40)
 * **Changes**:
-  1. Set default username and name to 'IliaRus'.
+  1. Set default username and name to 'Player'.
 * **Previous values -> New values**:
-  - username: 'Beatstar Offline Master' -> 'IliaRus'
+  - username: 'Beatstar Offline Master' -> 'Player'
 
 ## 2026-08-25 01:03 - Fix track skins selection and track difficulty visibility bugs
 * **Files Modified**:

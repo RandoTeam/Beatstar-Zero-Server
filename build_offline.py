@@ -79,7 +79,7 @@ def main():
             os.environ.get("ANDROID_HOME"),
             os.environ.get("ANDROID_SDK_ROOT"),
             os.path.expanduser("~/AppData/Local/Android/Sdk"),
-            r"C:\Users\Ilia V\AppData\Local\Android\Sdk",
+            os.path.join(os.environ.get("LOCALAPPDATA", ""), "Android", "Sdk"),
             "/usr/lib/android-sdk",
             "/opt/android-sdk"
         ]
@@ -150,8 +150,6 @@ def main():
     gadget_so_bytes = None
     gadget_so_path = os.path.join(project_root, "tools", "binaries", "libfrida-gadget.so")
     gadget_xz_path = os.path.join(project_root, "tools", "binaries", "frida-gadget.so.xz")
-    if not os.path.exists(gadget_xz_path):
-        gadget_xz_path = os.path.join(project_root, "HIbeatz_Project", "frida-gadget.so.xz")
 
     if os.path.exists(gadget_so_path):
         with open(gadget_so_path, "rb") as f:
@@ -163,11 +161,6 @@ def main():
         os.makedirs(os.path.dirname(gadget_so_path), exist_ok=True)
         with open(gadget_so_path, "wb") as f:
             f.write(gadget_so_bytes)
-    else:
-        alt_so = os.path.join(project_root, "HIbeatz_Project", "libfrida-gadget.so")
-        if os.path.exists(alt_so):
-            with open(alt_so, "rb") as f:
-                gadget_so_bytes = f.read()
 
     # Valid Frida Gadget configuration
     gadget_config_obj = {
