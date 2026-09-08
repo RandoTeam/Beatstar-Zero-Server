@@ -255,7 +255,7 @@ def main():
                 print(f"  -> Embedding canonical assets from {temp_assets_dir}...")
                 for root, dirs, files in os.walk(temp_assets_dir):
                     for file in files:
-                        if file == "user":
+                        if file == "user" or file.startswith("PUT_"):
                             continue
                         full_p = os.path.join(root, file)
                         rel_p = os.path.relpath(full_p, temp_assets_dir).replace("\\", "/")
