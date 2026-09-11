@@ -173,6 +173,7 @@ def generate_gadget_script():
     assert old_execute in bootstrap, 'old_execute not found'
     bootstrap = bootstrap.replace(old_execute, new_execute, 1)
 
+
     # 8. Save final native script file
     out_path = 'tools/Beatstar-Script-Android/libfrida-gadget.script.so'
     with open(out_path, 'w', encoding='utf-8') as f:

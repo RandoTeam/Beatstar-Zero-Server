@@ -9,3 +9,5 @@ tools/Beatstar-Script-Android/libfrida-gadget.script.so
 tools/binaries/libfrida-gadget.so
 __pycache__/
 *.log
+temp_extracted_assets/
+raw_package.apk

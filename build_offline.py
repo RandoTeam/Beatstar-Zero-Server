@@ -150,7 +150,6 @@ def main():
     gadget_so_bytes = None
     gadget_so_path = os.path.join(project_root, "tools", "binaries", "libfrida-gadget.so")
     gadget_xz_path = os.path.join(project_root, "tools", "binaries", "frida-gadget.so.xz")
-
     if os.path.exists(gadget_so_path):
         with open(gadget_so_path, "rb") as f:
             gadget_so_bytes = f.read()
