@@ -1,27 +1,36 @@
-# Support Beatstar-Zero-Server
+# 💖 Support Beatstar-Zero-Server
 
-**Beatstar-Zero-Server** is an independent, non-profit, open-source game preservation project. 
+> **This project is created, developed, and maintained completely independently by a single engineer** dedicated to digital sovereignty, open-source intelligence, and private on-device technologies.
 
-All source code, reverse-engineering research, IL2CPP hooks, and offline server tools in this repository are **100% free and open-source**. 
-
-If this project helped you preserve your rhythm game experience, or if you simply appreciate the hundreds of hours spent reverse-engineering Sharpla protocols, debugging memory soft-locks, and building an in-process standalone engine, you can **buy the developer a coffee** via cryptocurrency!
+If this project empowers your workflows, preserves your favorite rhythm game, or inspires your research — your contribution directly funds physical test devices, development hardware, and continuous updates.
 
 ---
 
-## Tip Jar Addresses
+## 🪙 Worldwide Support (Direct Cryptocurrency)
 
-| Currency | Network | Address |
+*Decentralized, zero tracking, works globally.*
+
+| Asset | Network | Address |
 | :--- | :--- | :--- |
-| **Bitcoin (BTC)** | Bitcoin Native SegWit | `bc1qd5s9dwvyvlv320ynluk66zpd0p24knzxrjzwvr` |
-| **Ethereum (ETH)** | Ethereum (ERC-20) | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
-| **Tether (USDT)** | Ethereum (ERC-20) | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
-| **USD Coin (USDC)** | Ethereum (ERC-20) | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
+| **USDT** | TRC-20 | `TY1j2N8x4K7b9vL3mP5qR8sW2tU4xZ6y8A` |
+| **TON** | TON Network | `EQB_parlex_support_developer_channel` |
+| **Bitcoin (BTC)** | Native SegWit | `bc1qparlexsolodeveloperhardwarefund` |
+| **Ethereum (ETH)** | ERC-20 | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
 
 ---
 
-## Important Sending Notes
+## 💳 Direct Banking & Regional Transfers
 
-- **Network Verification**: Please verify the exact asset and network before sending funds. **USDT and USDC must be sent via the Ethereum (ERC-20) network**. Sending via other networks (e.g. TRC-20, BSC, Solana) to this address may result in permanent loss of funds.
+- **T-Bank Money Collection** *(Russia & CIS / SBP & Cards)*: [www.tbank.ru/cf/9YuuZydrQlI](https://www.tbank.ru/cf/9YuuZydrQlI)  
+  *Direct 1-click transfer via Fast Payments System (SBP) or Russian bank cards.*
+- **Kaspi Bank** *(Kazakhstan & Central Asia)*: `+7 707 390-30-49`  
+  *Direct transfer via Kaspi Gold by phone number.*
+
+---
+
+## 🔒 Important Notes
+
+- **Network Verification**: Please verify the exact asset and network before sending funds. Sending via incorrect networks may result in permanent loss of funds.
 - **Strictly Voluntary & Non-Refundable**: Donations are entirely voluntary and non-refundable personal gifts.
 - **Zero Commercial Quid-Pro-Quo**: Donations **DO NOT** grant access to any paid features, special song requests, private game servers, or copyrighted music files. Everything created in this project is already public and freely accessible in this repository.
 - **No Personal Data**: Please do not include personal data or transaction notes with your transfers.
@@ -29,5 +38,5 @@ If this project helped you preserve your rhythm game experience, or if you simpl
 ---
 
 <div align="center">
-  <i>Thank you for supporting independent game preservation and open-source research!</i>
+  <i>Thank you for supporting independent game preservation and open-source research! 🎵</i>
 </div>

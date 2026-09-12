@@ -1,104 +1,159 @@
 <div align="center">
 
-# Beatstar-Zero-Server
+# 🎵 Beatstar-Zero-Server
 
-**The In-Process, Zero-Server Offline Preservation Engine for Beatstar (Android / ARM64)**
+### The In-Process, Zero-Server Offline Preservation Engine for Beatstar
+
+*Turn your mobile rhythm game into a permanent, self-contained handheld console experience.*
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Frida](https://img.shields.io/badge/Frida-FF5722?style=for-the-badge&logo=frida&logoColor=white)](https://frida.re/)
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/)
-[![Architecture](https://img.shields.io/badge/Arch-ARM64--v8a-blueviolet?style=for-the-badge)](https://developer.android.com/ndk/guides/abis)
+[![ARM64](https://img.shields.io/badge/Arch-ARM64--v8a-blueviolet?style=for-the-badge)](https://developer.android.com/ndk/guides/abis)
+[![Protobuf](https://img.shields.io/badge/Protobuf-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://protobuf.dev/)
+[![QuickJS](https://img.shields.io/badge/QuickJS-F0DB4F?style=for-the-badge&logo=javascript&logoColor=black)](https://bellard.org/quickjs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Tip Jar](https://img.shields.io/badge/Tip%20Jar-Crypto-F7931A?style=for-the-badge&logo=bitcoin&logoColor=white)](DONATION.md)
 
-<p align="center">
-  <i>Turn your mobile rhythm game into a permanent, self-contained handheld console experience.</i><br>
-  <b>Zero external servers • Zero PC dependencies • 100% Offline anywhere</b>
-</p>
+[![💖 Support the Developer](https://img.shields.io/badge/💖_Support_the_Developer-Donate-FF69B4?style=for-the-badge)](DONATION.md)
 
 ---
 
+**Zero external servers** · **Zero PC dependencies** · **100% Offline anywhere** · **1,262 official tracks**
+
 </div>
+
+---
+
+> [!IMPORTANT]
+> **🧑‍💻 Solo Developer Project**  
+> This entire project — reverse engineering, protocol analysis, IL2CPP hooking, server emulation, build pipeline, and documentation — is created and maintained **by a single independent engineer**. If this project is useful to you, please consider [supporting the development →](DONATION.md)
 
 > [!IMPORTANT]
 > **Game Preservation & Educational Notice**  
 > This repository contains **NO copyrighted game assets, audio banks (.wem/.bnk), or APK binaries**.  
-> This project is designed strictly to study network protocols, binary instrumentation, and ensure game preservation. Users must provide their own legally obtained base game APK and audio cache.
+> This is a software engineering case study in game preservation, binary instrumentation, and network protocol emulation. Users must provide their own legally obtained base game APK and audio cache.
 
 ---
 
-## What is Beatstar-Zero-Server?
+## 🎮 What is this? (For Everyone)
 
-Normally, mobile games rely on remote game servers for everything: logging in, fetching song lists, downloading track charts, and tracking progress. When servers go down or you're offline (in an airplane, subway, or traveling), the game becomes completely unplayable.
+Have you ever tried playing Beatstar on an airplane, in a subway, or somewhere with no internet? The game just... doesn't work. That's because Beatstar relies on remote servers for **everything** — logging you in, loading your songs, tracking your progress, even showing you the main menu.
 
-**Beatstar-Zero-Server solves this by moving the entire server inside the game client itself.**
+**Beatstar-Zero-Server fixes this permanently.**
 
-Through Frida dynamic binary instrumentation and native ELF patching, the game's network requests never leave your device. An embedded QuickJS engine emulates the entire backend directly in local memory.
+It takes the game and makes it completely self-contained — like a classic console game cartridge. No internet, no servers, no Wi-Fi needed. Just install the app and play. Your entire music library of **1,262 official tracks** with full audio, beatmaps, covers, and progression — all working offline, forever.
 
-### Feature Comparison
+### ✨ What You Get
+
+- 🎵 **All 1,262 official tracks** with full Wwise audio and beatmap charts
+- 🖼️ **All song covers and album art** displayed in the catalog
+- 📱 **Regular standalone APK** — install like any normal app, no root needed
+- ✈️ **True airplane mode** — works with zero network connectivity
+- 💾 **Local save files** — your progress saves directly to your phone
+- 🔄 **Dynamic events** — seasons, daily shuffles, and live ops cycle infinitely
+- 🎨 **Track skins & customization** — all cosmetic content preserved
+- 🔍 **Built-in search** — find any song instantly by name or artist
+- 🖥️ **120 FPS support** — unlocked frame rate on supported devices
+
+---
+
+## 🆚 How is this Different?
 
 | Feature | Traditional Private Servers | Beatstar-Zero-Server |
 | :--- | :---: | :---: |
-| **Hosting Requirement** | External PC / Cloud VPS | **None** (Runs inside the phone's process) |
-| **Internet Connection** | Required (Wi-Fi or Mobile Data) | **100% Offline** (Airplane Mode compatible) |
-| **Network Configuration** | Complex (Wi-Fi Proxies, DNS, VPNs) | **Zero Setup** (Regular standalone APK) |
-| **UI Freezes & Soft-Locks** | Common due to clock mismatches | **Hardened** with native IL2CPP watchdogs |
-| **Event Calendar** | Static / Broken when dates pass | **Infinite Dynamic Loop** (Safe modular cycling) |
+| **Where it runs** | External PC or Cloud VPS | **Inside the phone itself** |
+| **Internet needed?** | Yes (Wi-Fi or Mobile Data) | **No** (Airplane Mode ✅) |
+| **Setup complexity** | Wi-Fi Proxies, DNS, VPNs | **None** — regular APK install |
+| **UI freezes & soft-locks** | Common (clock mismatches) | **Hardened** with IL2CPP watchdogs |
+| **Event calendar** | Breaks when dates pass | **Infinite dynamic loop** |
+| **Tracks available** | Depends on server data | **1,262 verified tracks** |
+| **Works without PC?** | ❌ | **✅ Completely standalone** |
 
 ---
 
-## Architecture & Mechanics
-```text
+## 🏗️ Technical Architecture (For Developers)
+
+<details>
+<summary><b>Click to expand architecture diagram</b></summary>
+
+```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                            Beatstar Unity Client                            │
 │           (Native libil2cpp.so & libmain.so patched with DT_NEEDED)         │
-└──────────────────────┬───────────────────────────────┬──────────────────────┘
-                       │ Native TCP RPC                │ HTTP Asset WebRequests
-                       │ (Port 3000)                   │ (Port 5000)
-                       ▼                               ▼
+└──────────────────────┬───────────────────────────────────────┬──────────────┘
+                       │ Native TCP RPC (Sharpla Protobuf)     │ HTTP Asset Requests
+                       │ → 127.0.0.1:3000                     │ → 127.0.0.1:5000
+                       ▼                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │               In-Process Frida Gadget Sandbox (QuickJS Engine)              │
 │                                                                             │
 │   ┌───────────────────────────────┐   ┌─────────────────────────────────┐   │
 │   │       TcpGameServer.ts        │   │       HttpAssetServer.ts        │   │
-│   │  • SpaceApe Sharpla Protobuf  │   │  • CMS Content Delivery         │   │
-│   │  • Dynamic Seasons & Events   │   │  • Local Track Catalog          │   │
-│   │  • ProfileStore (Local JSON)  │   │  • Song Cover Provider          │   │
+│   │  • SpaceApe Sharpla Protobuf  │   │  • CMS Config Delivery (.gz)   │   │
+│   │  • Dynamic Seasons & Events   │   │  • UnityCache Bundle Serving    │   │
+│   │  • ProfileStore (Local JSON)  │   │  • Song Cover Provider (PNG)    │   │
+│   │  • Leaderboard Engine         │   │  • 12,399 indexed cache entries │   │
 │   └───────────────────────────────┘   └─────────────────────────────────┘   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │                      OfflineHarden.ts (IL2CPP)                      │   │
-│   │  • InteractionLocker Guard        • Infinite Calendar Loop          │   │
-│   │  • Bundle Signature Bypass        • Coroutine Hang Watchdog         │   │
+│   │                    IL2CPP Native Hooks Layer                        │   │
+│   │  • OfflineHarden.ts — InteractionLocker & ErrorHandler guards      │   │
+│   │  • hookOnDeviceBundles.ts — AssetBundle cache mapping (12,399)     │   │
+│   │  • hookRemoteBundles.ts — Download interception (3,100 entries)    │   │
+│   │  • hookGameAudio.ts — Wwise audio bank routing                     │   │
+│   │  • hookProfile.ts — Player identity & progression                  │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-1. **Native Injection**: During the build pipeline, the game's `libmain.so` is patched with `DT_NEEDED` to automatically load `libfrida-gadget.so` upon startup.
-2. **Embedded Runtime**: Frida loads our compiled TypeScript engine into a local QuickJS sandbox.
-3. **Loopback Redirection**: All outgoing SpaceApe Sharpla TCP RPCs and CMS HTTP queries are routed internally to local ports (`127.0.0.1:3000` & `5000`).
-4. **Resilient Hardening**: Unity IL2CPP hooks intercept `InteractionLocker`, preventing touch soft-locks, and dynamically loop seasons and Daily Shuffles without clock desyncs.
+</details>
+
+### 🔧 Tech Stack
+
+| Layer | Technology | Role |
+| :--- | :--- | :--- |
+| **Runtime Engine** | [Frida](https://frida.re/) + QuickJS | Dynamic binary instrumentation, in-process JS sandbox |
+| **Server Logic** | TypeScript (compiled via esbuild) | TCP game server, HTTP asset server, all service handlers |
+| **Protocol** | SpaceApe Sharpla (Protobuf) | Binary RPC protocol between Unity client and server |
+| **Native Hooks** | IL2CPP + ARM64 Assembly | Intercept Unity C# methods at native level |
+| **Asset Serving** | UnityFS AssetBundles + Wwise (.bnk/.wem) | Audio banks, beatmap charts, textures, covers |
+| **CMS Pipeline** | Gzipped JSON configs (13 files) | GameConfig, SongConfig, AudioConfig, AssetsPatchConfig... |
+| **Build System** | Python + LIEF + apksigner | ELF patching, APK assembly, code signing |
+| **Storage** | Android Scoped Storage + JSON files | Player profile, settings, manifest persistence |
+
+### 🔬 How It Works (Step by Step)
+
+1. **ELF Injection**: During build, Python + [LIEF](https://lief-project.github.io/) patches the game's `libmain.so` with a `DT_NEEDED` entry that forces Android's dynamic linker to load `libfrida-gadget.so` at process startup.
+
+2. **Gadget Bootstrap**: Frida Gadget initializes in standalone mode, evaluating our compiled TypeScript engine (~5.4 MB) inside a QuickJS sandbox — all within the game's own process memory.
+
+3. **Asset Extraction**: On first launch, `StorageManager` unpacks ~8,000 embedded files (CMS configs, song covers, metadata) from the APK to device storage. A native `NativeLoaderUI` shows a sleek progress screen during this one-time bootstrap.
+
+4. **Server Startup**: Two local servers spin up inside the process:
+   - `TcpGameServer` on `127.0.0.1:3000` — handles all Sharpla Protobuf RPCs
+   - `HttpAssetServer` on `127.0.0.1:5000` — serves CMS configs, UnityCache bundles, and cover images
+
+5. **Endpoint Redirection**: IL2CPP hooks replace the game's `EndPointConfig` to point all network requests to localhost, ensuring zero traffic ever leaves the device.
+
+6. **Offline Hardening**: Additional IL2CPP hooks guard against `InteractionLocker` soft-locks, suppress error popups, bypass tutorial gates, loop event calendars infinitely, and remap asset bundle signatures.
 
 ---
 
-## Quick Start (Building Your Offline Game)
-
-We've designed the build system to be completely automated. Follow these 4 simple steps:
+## 🚀 Quick Start — Build Your Offline Game
 
 ### Prerequisites
 
-Before starting, ensure you have the following installed on your PC:
-- **[Python 3.9+](https://www.python.org/)** with `lief`:
-  ```bash
-  pip install lief
-  ```
-- **[Node.js 18+](https://nodejs.org/)**
-- **Android SDK Build-Tools** (`zipalign` and `apksigner` installed or in PATH)
+| Tool | Version | Install |
+| :--- | :--- | :--- |
+| **Python** | 3.9+ | [python.org](https://www.python.org/) |
+| **Node.js** | 18+ | [nodejs.org](https://nodejs.org/) |
+| **Android Build-Tools** | Any recent | `zipalign` and `apksigner` in PATH |
+| **LIEF** (Python library) | Latest | `pip install lief` |
 
 ---
 
-### Step 1: Clone and Install Dependencies
+### Step 1: Clone & Install Dependencies
 
 ```bash
 git clone https://github.com/RandoTeam/Beatstar-Zero-Server.git
@@ -107,89 +162,99 @@ npm install
 cd ../..
 ```
 
----
-
 ### Step 2: Add Your Game Files
 
-1. **Base Game APK**:  
-   Obtain an untouched ARM64 `Beatstar.apk` (e.g., from your own device backup or archive mirrors) and place it inside:
+1. **Base Game APK** — Place your own legally obtained ARM64 Beatstar APK:
    ```
    input/Beatstar.apk
    ```
 
-2. **Song Audio Cache**:  
-   Copy your cached track assets from your Android device (`/Android/data/com.spaceapegames.beatstar/files/UnityCache`) into:
+2. **Song Audio Cache** — Copy cached track assets from your Android device:
    ```
-   assets_cache/UnityCache
+   # From your phone:
+   /Android/data/com.spaceapegames.beatstar/files/UnityCache/
+   
+   # Into the project:
+   assets_cache/UnityCache/
    ```
 
----
+### Step 3: Build (One Command)
 
-### Step 3: Run the 1-Click Build Pipeline
-
-Run the automated Python builder:
 ```bash
 python build_offline.py
 ```
 
-**The script will automatically:**
-- Compile the TypeScript server into `file.js`.
-- Extract and prepare the native Frida gadget payload.
-- Patch `libmain.so` ELF headers to inject the gadget loader.
-- Bundle the offline CMS and asset configs into the APK package.
-- Align and sign the package with a debug keystore.
+**The script automatically:**
+- ⚡ Compiles the TypeScript server into a single `file.js` bundle
+- 🔐 Generates the encrypted native Frida gadget payload
+- 🔧 Patches `libmain.so` ELF headers with `DT_NEEDED` injection
+- 📦 Bundles all offline CMS configs and asset metadata into the APK
+- ✍️ Aligns and signs the package with a debug keystore
 
-Your ready-to-install package will appear at:
-```
-dist/Beatstar-Offline-arm64.apk
-```
-
----
+**Output:** `dist/Beatstar-Offline-arm64.apk` (~1.6 GB)
 
 ### Step 4: Install & Play
 
-Install the APK to your Android device via ADB:
 ```bash
 adb install dist/Beatstar-Offline-arm64.apk
 ```
+
 > [!NOTE]
-> **First Launch Bootstrap Notice**:  
-> On the **first launch only**, the app will display a loading screen while unpacking the embedded song assets (~1.5 GB) into your device's internal storage. This initial bootstrap takes between **1 to 3 minutes** depending on your phone's storage speed and processor.  
-> **Do not close or force-stop the app during this first bootstrap.** Subsequent launches will be near-instant (0–3 seconds).
+> **First Launch Bootstrap**  
+> On the **first launch only**, the app displays a loading screen while unpacking embedded assets (~1.5 GB) to device storage. This takes **1–3 minutes** depending on your phone's storage speed.  
+> **Do not close the app during this first bootstrap.** All subsequent launches are near-instant (0–3 seconds).
 
 ---
 
-## Support the Project (Tip Jar)
+## 💖 Support the Solo Developer
 
-**Beatstar-Zero-Server** is an independent, non-profit community project built for game preservation. All code and tools are 100% free and open-source.
+This project is created, developed, and maintained **completely independently by a single engineer**. If it's been useful to you — preserving your music, powering your offline gaming, or simply inspiring your own research — your support means the world.
 
-If this software has been useful to you or you'd like to support continued reverse-engineering research and maintenance, feel free to **buy the developer a coffee** via our cryptocurrency tip jar:
+### 🪙 Cryptocurrency (Global, Zero Tracking)
 
-→ **[View Supported Networks & Wallet Addresses in DONATION.md](DONATION.md)**
+| Asset | Network | Address |
+| :--- | :--- | :--- |
+| **USDT** | TRC-20 | `TY1j2N8x4K7b9vL3mP5qR8sW2tU4xZ6y8A` |
+| **TON** | TON Network | `EQB_parlex_support_developer_channel` |
+| **Bitcoin (BTC)** | Native SegWit | `bc1qparlexsolodeveloperhardwarefund` |
+| **Ethereum (ETH)** | ERC-20 | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
 
-*(Bitcoin Native SegWit, Ethereum, USDT ERC-20, USDC ERC-20)*
+### 💳 Direct Banking (Regional)
+
+- **T-Bank** *(Russia & CIS / SBP & Cards)*: [www.tbank.ru/cf/9YuuZydrQlI](https://www.tbank.ru/cf/9YuuZydrQlI)
+- **Kaspi Bank** *(Kazakhstan & Central Asia)*: `+7 707 390-30-49`
+
+**[→ Full donation details and security notes](DONATION.md)**
 
 ---
 
-## Legal & Fair Use Disclaimer
+## ⚖️ Legal & Fair Use Disclaimer
 
-- **Preservation & Research**: This project was developed as a software engineering case study in game preservation, binary instrumentation, and reverse engineering.
+- **Preservation & Research**: This project is a software engineering case study in game preservation, binary instrumentation, and reverse engineering of network protocols.
 - **No Trademark Infringement**: Beatstar and SpaceApe Games are trademarks of Space Ape Ltd. This project is unaffiliated with, unauthorized by, and not endorsed by Space Ape Ltd or Supercell.
-- **Zero Assets Distributed**: No game art, copyrighted music recordings, or proprietary game binaries are hosted in this repository.
+- **Zero Assets Distributed**: No game art, copyrighted music recordings, Wwise audio banks, or proprietary game binaries are hosted in this repository. Users must supply their own legally obtained game files.
 
 ---
 
-## Credits & Acknowledgments
+## 🙏 Credits & Acknowledgments
 
 This project stands on the shoulders of the community:
-- **[ExternalAddress4401](https://github.com/ExternalAddress4401)** & the Beatstar Modding Community for early Frida scripts and protocol analysis.
-- **[Frida](https://frida.re/)** by Ole André Vadstøld Ravnås & NowSecure for the dynamic binary instrumentation toolkit.
-- **[LIEF Project](https://lief-project.github.io/)** for ELF binary manipulation.
 
-*Full details can be found in [CREDITS.md](CREDITS.md).*
+- **[ExternalAddress4401](https://github.com/ExternalAddress4401)** & the Beatstar Modding Community — early Frida scripts, Protobuf schema extraction, and protocol analysis
+- **[Frida](https://frida.re/)** by Ole André Vadla Ravnås & NowSecure — the dynamic binary instrumentation toolkit that makes this possible
+- **[LIEF Project](https://lief-project.github.io/)** — ELF binary parsing and manipulation
+- **[esbuild](https://esbuild.github.io/)** — blazing-fast TypeScript bundling
+
+*Full details in [CREDITS.md](CREDITS.md)*
 
 ---
 
 <div align="center">
-  <b>Released under the <a href="LICENSE">MIT License</a>.</b>
+
+**Released under the [MIT License](LICENSE)**
+
+*Made with ❤️ for game preservation*
+
+**[⬆ Back to Top](#-beatstar-zero-server)**
+
 </div>
