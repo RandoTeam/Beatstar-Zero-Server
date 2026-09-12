@@ -1,6 +1,6 @@
 <div align="center">
 
-# Beatstar-Zero-Server
+# <img src="docs/icons/gamepad.svg" width="34" height="34" align="center" /> Beatstar-Zero-Server
 
 ### The In-Process, Zero-Server Offline Preservation Engine for Beatstar
 
@@ -14,7 +14,7 @@
 [![Protobuf](https://img.shields.io/badge/Protobuf-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://protobuf.dev/)
 [![QuickJS](https://img.shields.io/badge/QuickJS-F0DB4F?style=for-the-badge&logo=javascript&logoColor=black)](https://bellard.org/quickjs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![Support the Developer](https://img.shields.io/badge/Support_the_Developer-Donate-181717?style=for-the-badge&logo=githubsponsors&logoColor=white)](DONATION.md)
+[![💖 Support the Developer](https://img.shields.io/badge/💖_Support_the_Developer-Donate-FF69B4?style=for-the-badge)](DONATION.md)
 
 ---
 
@@ -25,7 +25,7 @@
 ---
 
 > [!IMPORTANT]
-> **Solo Developer Project**  
+> **🧑‍💻 Solo Developer Project**  
 > This entire project — reverse engineering, protocol analysis, IL2CPP hooking, server emulation, build pipeline, and documentation — is created and maintained **by a single independent engineer**. Hundreds of hours went into understanding the game's binary protocols, Unity internals, and building a fully autonomous offline engine.  
 > If this project is useful to you, please consider [supporting the development →](DONATION.md)
 
@@ -37,7 +37,7 @@
 
 ---
 
-## What is Beatstar-Zero-Server?
+## <img src="docs/icons/gamepad.svg" width="24" height="24" align="center" /> What is Beatstar-Zero-Server?
 
 **The short version:** It makes Beatstar work completely offline — no internet connection, no external servers, and no PC required after the initial build.
 
@@ -60,24 +60,24 @@ Instead of communicating with remote cloud infrastructure, the game communicates
 
 The result is a **single standalone APK** that functions like a traditional handheld console game. Once installed, it launches and plays anywhere, anytime, with zero internet connectivity.
 
-### Key Capabilities & Included Content
+### <img src="docs/icons/features.svg" width="20" height="20" align="center" /> Key Capabilities & Included Content
 
 | Capability | Technical Details |
 | :--- | :--- |
-| **1,262 Official Tracks** | Full Wwise audio banks and beatmap charts indexed and served locally |
-| **Complete Song Catalog** | All official cover artwork, album details, and metadata rendered |
-| **Regular Standalone APK** | Installs like a standard Android package — **no root required** |
-| **True Offline Mode** | Operates in airplane mode with zero outbound network requests |
-| **Local Persistence** | Progress, unlocks, and configuration stored locally on device storage |
-| **Dynamic LiveOps Events** | Tour Pass seasons, Daily Shuffles, and events cycle automatically |
-| **Complete Cosmetics** | Track skins, calling cards, profile icons, and emojis unlocked |
-| **Built-in Track Search** | Native IL2CPP search filter to find any song by title or artist |
-| **120 FPS High Refresh** | Frame rate unlocked for compatible high-refresh-rate displays |
-| **Anti-Softlock Protection** | Native IL2CPP guards prevent UI locks and coroutine timeouts |
+| 🎵 **1,262 Official Tracks** | Full Wwise audio banks and beatmap charts indexed and served locally |
+| 🖼️ **Complete Song Catalog** | All official cover artwork, album details, and metadata rendered |
+| 📱 **Regular Standalone APK** | Installs like a standard Android package — **no root required** |
+| ✈️ **True Offline Mode** | Operates in airplane mode with zero outbound network requests |
+| 💾 **Local Persistence** | Progress, unlocks, and configuration stored locally on device storage |
+| 🔄 **Dynamic LiveOps Events** | Tour Pass seasons, Daily Shuffles, and events cycle automatically |
+| 🎨 **Complete Cosmetics** | Track skins, calling cards, profile icons, and emojis unlocked |
+| 🔍 **Built-in Track Search** | Native IL2CPP search filter to find any song by title or artist |
+| 🖥️ **120 FPS High Refresh** | Frame rate unlocked for compatible high-refresh-rate displays |
+| 🛡️ **Anti-Softlock Protection** | Native IL2CPP guards prevent UI locks and coroutine timeouts |
 
 ---
 
-## Comparison with Traditional Private Servers
+## <img src="docs/icons/compare.svg" width="24" height="24" align="center" /> Comparison with Traditional Private Servers
 
 | Architectural Aspect | Traditional Private Servers | Beatstar-Zero-Server |
 | :--- | :---: | :---: |
@@ -92,9 +92,9 @@ The result is a **single standalone APK** that functions like a traditional hand
 
 ---
 
-## Quick Start: Building Your Offline Game
+## <img src="docs/icons/terminal.svg" width="24" height="24" align="center" /> Quick Start: Building Your Offline Game
 
-### Prerequisites (PC Requirements)
+### <img src="docs/icons/cpu.svg" width="20" height="20" align="center" /> Prerequisites (PC Requirements)
 
 Building the offline APK requires a computer (Windows, macOS, or Linux) with the following tools installed. Once the APK is built and transferred to your phone, your computer is no longer needed.
 
@@ -111,7 +111,7 @@ Building the offline APK requires a computer (Windows, macOS, or Linux) with the
 > - **Windows**: Download [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) for `adb`, and download Build-Tools for `zipalign` / `apksigner`. Ensure their paths are added to your environment `PATH`.
 > - **macOS / Linux**: Install via package manager (`brew install android-platform-tools` or `apt install adb zipalign apksigner`).
 
-### Required Game Files
+### <img src="docs/icons/folder.svg" width="20" height="20" align="center" /> Required Game Files
 
 Users must supply their own legally acquired game files. This repository does not distribute proprietary content.
 
@@ -121,7 +121,7 @@ Users must supply their own legally acquired game files. This repository does no
 | **Song Audio Cache** | Extracted from your personal device cache directory | `assets_cache/UnityCache/` |
 
 <details>
-<summary><b>How to copy your audio cache from your phone</b></summary>
+<summary><b>📱 How to copy your audio cache from your phone</b></summary>
 
 1. Connect your Android device to your PC using a USB cable.
 2. Ensure file transfer (MTP) mode is enabled on your phone.
@@ -144,7 +144,7 @@ Users must supply their own legally acquired game files. This repository does no
 
 ---
 
-### Build Pipeline
+### <img src="docs/icons/package.svg" width="20" height="20" align="center" /> Build Pipeline
 
 #### Step 1: Clone Repository & Install Dependencies
 
@@ -178,11 +178,11 @@ python build_offline.py
 ```
 
 The script will automatically perform all necessary build stages:
-- Compile TypeScript hooks and servers into a unified `file.js` bundle (~5.4 MB)
-- Generate the native encrypted Frida gadget payload (`libfrida-gadget.script.so`)
-- Patch `libmain.so` ELF headers with `DT_NEEDED` to load the instrumentation layer
-- Bundle the offline CMS configurations, metadata, and song cover assets
-- Align and cryptographically sign the APK package with a debug keystore
+- ⚡ **Compile TypeScript** hooks and servers into a unified `file.js` bundle (~5.4 MB)
+- 🔐 **Generate encrypted native Frida gadget** payload (`libfrida-gadget.script.so`)
+- 🔧 **Patch libmain.so ELF headers** with `DT_NEEDED` to load the instrumentation layer
+- 📦 **Bundle offline CMS configs**, metadata, and song cover assets
+- ✍️ **Align and cryptographically sign** the APK package with a debug keystore
 
 **Final Output Package:** `dist/Beatstar-Offline-arm64.apk` (~1.6 GB)
 
@@ -199,12 +199,12 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 > [!NOTE]
 > **First Launch Bootstrap Notice**:  
-> On the **first launch only**, the app will present a loading screen while unpacking embedded offline assets (~1.5 GB) into device storage. This initial bootstrap takes between **1 to 3 minutes** depending on the device storage speed.  
+> On the **first launch only**, the app will present a sleek loading screen while unpacking embedded offline assets (~1.5 GB) into device storage. This initial bootstrap takes between **1 to 3 minutes** depending on the device storage speed.  
 > **Do not close or force-stop the application during this initial extraction.** Subsequent launches bypass this step and open within seconds.
 
 ---
 
-## Technical Architecture (For Developers)
+## <img src="docs/icons/layers.svg" width="24" height="24" align="center" /> Technical Architecture (For Developers)
 
 <details>
 <summary><b>Click to expand architecture diagram</b></summary>
@@ -241,7 +241,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 </details>
 
-### Technology Stack
+### <img src="docs/icons/code.svg" width="20" height="20" align="center" /> Technology Stack
 
 | Layer / Subsystem | Technology | Architectural Function |
 | :--- | :--- | :--- |
@@ -254,7 +254,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 | **Build System** | [Python](https://www.python.org/) + [LIEF](https://lief-project.github.io/) + [apksigner](https://developer.android.com/tools/apksigner) | ELF dependency injection, APK repacking, zipalign, and signing |
 | **Persistence** | Android Scoped Storage + JSON | Local player profile, game preferences, and asset manifest storage |
 
-### Execution Pipeline (Step-by-Step)
+### <img src="docs/icons/workflow.svg" width="20" height="20" align="center" /> Execution Pipeline (Step-by-Step)
 
 1. **ELF Injection**: During the build phase, Python and [LIEF](https://lief-project.github.io/) insert a `DT_NEEDED` entry into the game's `libmain.so`, directing the Android dynamic linker to load `libfrida-gadget.so` at process start.
 
@@ -272,13 +272,13 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 ---
 
-## Project Sponsorship & Donations
+## <img src="docs/icons/heart.svg" width="24" height="24" align="center" /> Support the Solo Developer
 
 This project is created, developed, and maintained **completely independently by a single engineer** — covering protocol reverse engineering, IL2CPP disassembly, server emulation, and build automation.
 
 If this project has preserved your music experience or assisted your research, voluntary contributions directly fund development hardware, physical test devices, and long-term maintenance.
 
-### Cryptocurrency (Global)
+### <img src="docs/icons/crypto.svg" width="20" height="20" align="center" /> Cryptocurrency (Global, Zero Tracking)
 
 *Decentralized, zero tracking, globally accessible.*
 
@@ -288,18 +288,18 @@ If this project has preserved your music experience or assisted your research, v
 | **Bitcoin (BTC)** | Native SegWit | `bc1qparlexsolodeveloperhardwarefund` |
 | **Ethereum (ETH)** | ERC-20 | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
 
-### Direct Banking & Regional Transfers
+### <img src="docs/icons/bank.svg" width="20" height="20" align="center" /> Direct Banking & Regional Transfers
 
-- **T-Bank Money Collection** *(Russia & CIS / SBP & Cards)*: [www.tbank.ru/cf/9YuuZydrQlI](https://www.tbank.ru/cf/9YuuZydrQlI)  
+- 💳 **T-Bank Money Collection** *(Russia & CIS / SBP & Cards)*: [www.tbank.ru/cf/9YuuZydrQlI](https://www.tbank.ru/cf/9YuuZydrQlI)  
   *Direct 1-click transfer via Fast Payments System (SBP) or bank card.*
-- **Kaspi Bank** *(Kazakhstan & Central Asia)*: `+7 707 390-30-49`  
+- 💳 **Kaspi Bank** *(Kazakhstan & Central Asia)*: `+7 707 390-30-49`  
   *Direct transfer via Kaspi Gold by phone number.*
 
 **[View complete donation details and security notes in DONATION.md](DONATION.md)**
 
 ---
 
-## Legal & Fair Use Disclaimer
+## <img src="docs/icons/shield.svg" width="24" height="24" align="center" /> Legal & Fair Use Disclaimer
 
 This project is distributed under the [MIT License](LICENSE) and is intended **solely for educational research and game preservation**.
 
@@ -315,7 +315,7 @@ This project is distributed under the [MIT License](LICENSE) and is intended **s
 
 ---
 
-## Credits & Acknowledgments
+## <img src="docs/icons/award.svg" width="24" height="24" align="center" /> Credits & Acknowledgments
 
 This project builds upon the valuable research of the open-source and modding community:
 
@@ -334,7 +334,7 @@ This project builds upon the valuable research of the open-source and modding co
 
 **Released under the [MIT License](LICENSE)**
 
-*Engineered for digital preservation.*
+*Made with ❤️ for game preservation*
 
 **[Back to Top](#beatstar-zero-server)**
 
