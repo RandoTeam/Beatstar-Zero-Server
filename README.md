@@ -14,11 +14,26 @@
 [![Protobuf](https://img.shields.io/badge/Protobuf-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://protobuf.dev/)
 [![QuickJS](https://img.shields.io/badge/QuickJS-F0DB4F?style=for-the-badge&logo=javascript&logoColor=black)](https://bellard.org/quickjs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-[![💖 Support the Developer](https://img.shields.io/badge/💖_Support_the_Developer-Donate-FF69B4?style=for-the-badge)](DONATION.md)
+[![💖 Support the Developer](https://img.shields.io/badge/💖_Support_the_Developer-Donate-FF69B4?style=for-the-badge)](#support-the-solo-developer)
 
 ---
 
-**Zero external servers** · **Zero PC dependencies after build** · **100% Offline anywhere** · **1,262 official tracks**
+**Zero external servers** · **Zero PC dependencies after build** · **100% Offline anywhere** · **1,000+ official tracks supported**
+
+---
+
+<p align="center">
+  <a href="#what-is-beatstar-zero-server"><b>Overview</b></a> •
+  <a href="#key-capabilities--included-content"><b>Features</b></a> •
+  <a href="#comparison-with-traditional-private-servers"><b>Comparison</b></a> •
+  <a href="#quick-start-building-your-offline-game"><b>Quick Start</b></a> •
+  <a href="#prerequisites-pc-requirements"><b>Prerequisites</b></a> •
+  <a href="#required-game-files"><b>Game Files & Versions</b></a> •
+  <a href="#build-pipeline"><b>Build Guide</b></a> •
+  <a href="#technical-architecture-for-developers"><b>Architecture</b></a> •
+  <a href="#support-the-solo-developer"><b>Support & Donate</b></a> •
+  <a href="#legal--fair-use-disclaimer"><b>Legal</b></a>
+</p>
 
 </div>
 
@@ -27,7 +42,7 @@
 > [!IMPORTANT]
 > **🧑‍💻 Solo Developer Project**  
 > This entire project — reverse engineering, protocol analysis, IL2CPP hooking, server emulation, build pipeline, and documentation — is created and maintained **by a single independent engineer**. Hundreds of hours went into understanding the game's binary protocols, Unity internals, and building a fully autonomous offline engine.  
-> If this project is useful to you, please consider [supporting the development →](DONATION.md)
+> If this project is useful to you, please consider **[supporting the developer on this page ↓](#support-the-solo-developer)**
 
 > [!IMPORTANT]
 > **Game Preservation & Educational Notice**  
@@ -64,16 +79,16 @@ The result is a **single standalone APK** that functions like a traditional hand
 
 | Capability | Technical Details |
 | :--- | :--- |
-| 🎵 **1,262 Official Tracks** | Full Wwise audio banks and beatmap charts indexed and served locally |
-| 🖼️ **Complete Song Catalog** | All official cover artwork, album details, and metadata rendered |
+| 🎵 **1,000+ Official Tracks** | Dynamically indexes all provided audio bundles — typically **over 1,000 to 1,260+ tracks** depending on your cache archive |
+| 🖼️ **Complete Song Catalog** | Official cover artwork, album details, and metadata rendered offline |
 | 📱 **Regular Standalone APK** | Installs like a standard Android package — **no root required** |
 | ✈️ **True Offline Mode** | Operates in airplane mode with zero outbound network requests |
 | 💾 **Local Persistence** | Progress, unlocks, and configuration stored locally on device storage |
 | 🔄 **Dynamic LiveOps Events** | Tour Pass seasons, Daily Shuffles, and events cycle automatically |
 | 🎨 **Complete Cosmetics** | Track skins, calling cards, profile icons, and emojis unlocked |
 | 🔍 **Built-in Track Search** | Native IL2CPP search filter to find any song by title or artist |
-| 🖥️ **120 FPS High Refresh** | Frame rate unlocked for compatible high-refresh-rate displays |
-| 🛡️ **Anti-Softlock Protection** | Native IL2CPP guards prevent UI locks and coroutine timeouts |
+| 🖥️ **Built-in 120 FPS Unlock** | Native IL2CPP hook unlocks 120 FPS on high-refresh displays — **no third-party mod APK needed** |
+| 🛡️ **Anti-Softlock Protection** | Native IL2CPP guards prevent UI locks, coroutine timeouts, and desyncs |
 
 ---
 
@@ -87,7 +102,7 @@ The result is a **single standalone APK** that functions like a traditional hand
 | **Network Configuration** | Wi-Fi proxies, DNS redirects, VPNs | **None** (Standard APK installation) |
 | **UI Soft-Locks & Freezes** | Common (clock desynchronization) | **Protected** via IL2CPP watchdogs |
 | **Event Calendar** | Breaks after server dates lapse | **Infinite modular loop** |
-| **Track Availability** | Depends on remote host database | **1,262 verified tracks** |
+| **Track Support** | Depends on remote host database | **Dynamic indexing** (1,000+ songs) |
 | **Autonomous Operation** | Fails if host PC goes offline | **Permanent standalone operation** |
 
 ---
@@ -111,14 +126,23 @@ Building the offline APK requires a computer (Windows, macOS, or Linux) with the
 > - **Windows**: Download [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) for `adb`, and download Build-Tools for `zipalign` / `apksigner`. Ensure their paths are added to your environment `PATH`.
 > - **macOS / Linux**: Install via package manager (`brew install android-platform-tools` or `apt install adb zipalign apksigner`).
 
+---
+
 ### <img src="docs/icons/folder.svg" width="20" height="20" align="absmiddle" /> Required Game Files
 
 Users must supply their own legally acquired game files. This repository does not distribute proprietary content.
 
 | File Requirement | Source Description | Destination Path in Project |
 | :--- | :--- | :--- |
-| **Base Game APK** (ARM64-v8a) | Your personal device backup or official APK archive | `input/Beatstar.apk` |
-| **Song Audio Cache** | Extracted from your personal device cache directory | `assets_cache/UnityCache/` |
+| **Base Game APK** (ARM64-v8a) | Official untouched APK (see guide below) | `input/Beatstar.apk` |
+| **Song Audio Cache** | Extracted from personal device cache directory | `assets_cache/UnityCache/` |
+
+> [!IMPORTANT]
+> **Target Game Version & APK Specifications**:
+> - **Recommended Version**: **Beatstar v36.1.4 (Build 9545)** — this is the primary target version for all reverse-engineered IL2CPP signatures and CMS tables. Releases in the **v36.1.x** and **v36.0.x** branch are also compatible.
+> - **Architecture Requirement**: Must be **ARM64-v8a** (64-bit). 32-bit (armeabi-v7a) is not supported because the Frida Gadget bridge and memory hooks operate in 64-bit address space.
+> - **Official Base APK Only**: Use a clean, untouched official base APK (from Google Play Store backup, APKPure, or APKMirror). Do **not** use third-party modified APKs.
+> - **If downloaded as `.xapk` or `.apks`**: Open the archive using 7-Zip or WinRAR, extract the main standalone `base.apk` (or `com.spaceapegames.beatstar.apk`), and rename it to `Beatstar.apk`. Place it in `input/Beatstar.apk`.
 
 <details>
 <summary><b>📱 How to copy your audio cache from your phone</b></summary>
@@ -139,6 +163,7 @@ Users must supply their own legally acquired game files. This repository does no
 > ```bash
 > adb pull /storage/emulated/0/Android/data/com.spaceapegames.beatstar/files/UnityCache/ assets_cache/UnityCache/
 > ```
+> The offline asset server will automatically index whatever valid track bundles exist in your cache. While full complete archives contain 1,260+ songs, partial caches (e.g. 500–1,000 songs) are also seamlessly supported.
 
 </details>
 
@@ -162,7 +187,7 @@ Organize your files according to this layout:
 ```
 Beatstar-Zero-Server/
 ├── input/
-│   └── Beatstar.apk           <- Your base game APK here
+│   └── Beatstar.apk           <- Your base game APK here (ARM64, v36.1.4)
 ├── assets_cache/
 │   └── UnityCache/             <- Your UnityCache folder here
 │       └── Shared/
@@ -225,16 +250,17 @@ adb install dist/Beatstar-Offline-arm64.apk
 │   │  • SpaceApe Sharpla Protobuf  │   │  • CMS Config Delivery (.gz)    │   │
 │   │  • Dynamic Seasons & Events   │   │  • UnityCache Bundle Serving    │   │
 │   │  • ProfileStore (Local JSON)  │   │  • Song Cover Provider (PNG)    │   │
-│   │  • Leaderboard Engine         │   │  • 12,399 indexed cache entries │   │
+│   │  • Leaderboard Engine         │   │  • 12,000+ indexed entries      │   │
 │   └───────────────────────────────┘   └─────────────────────────────────┘   │
 │                                                                             │
 │   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │                    IL2CPP Native Hooks Layer                        │   │
 │   │  • OfflineHarden.ts — InteractionLocker & ErrorHandler guards       │   │
-│   │  • hookOnDeviceBundles.ts — AssetBundle cache mapping (12,399)      │   │
-│   │  • hookRemoteBundles.ts — Download interception (3,100 entries)     │   │
+│   │  • hookOnDeviceBundles.ts — AssetBundle cache mapping (12,000+)     │   │
+│   │  • hookRemoteBundles.ts — Download interception (3,000+ entries)    │   │
 │   │  • hookGameAudio.ts — Wwise audio bank routing                      │   │
 │   │  • hookProfile.ts — Player identity & progression                   │   │
+│   │  • graphics.ts — Unlocked 120 FPS high refresh mode                 │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -268,10 +294,11 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 5. **Loopback Redirection**: IL2CPP hooks intercept `EndPointConfig` and direct all network requests to `127.0.0.1`, guaranteeing **no network packets leave the device**.
 
-6. **Offline Hardening**: Native hooks bypass tutorial blockers, loop live event calendars infinitely, safeguard against `InteractionLocker` soft-locks, and remap asset bundle signatures for local storage resolution.
+6. **Offline Hardening & 120 FPS**: Native hooks bypass tutorial blockers, loop live event calendars infinitely, safeguard against `InteractionLocker` soft-locks, and automatically unlock **120 FPS** via `hacks/graphics.ts` without requiring external modding tools.
 
 ---
 
+<a id="support-the-solo-developer"></a>
 ## <img src="docs/icons/heart.svg" width="24" height="24" align="absmiddle" /> Support the Solo Developer
 
 This project is created, developed, and maintained **completely independently by a single engineer** — covering protocol reverse engineering, IL2CPP disassembly, server emulation, and build automation.
