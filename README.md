@@ -1,6 +1,6 @@
-<div align="center">
+<div align="absmiddle">
 
-# <img src="docs/icons/gamepad.svg" width="34" height="34" align="center" /> Beatstar-Zero-Server
+# <img src="docs/icons/gamepad.svg" width="34" height="34" align="absmiddle" /> Beatstar-Zero-Server
 
 ### The In-Process, Zero-Server Offline Preservation Engine for Beatstar
 
@@ -37,7 +37,7 @@
 
 ---
 
-## <img src="docs/icons/gamepad.svg" width="24" height="24" align="center" /> What is Beatstar-Zero-Server?
+## <img src="docs/icons/gamepad.svg" width="24" height="24" align="absmiddle" /> What is Beatstar-Zero-Server?
 
 **The short version:** It makes Beatstar work completely offline — no internet connection, no external servers, and no PC required after the initial build.
 
@@ -60,7 +60,7 @@ Instead of communicating with remote cloud infrastructure, the game communicates
 
 The result is a **single standalone APK** that functions like a traditional handheld console game. Once installed, it launches and plays anywhere, anytime, with zero internet connectivity.
 
-### <img src="docs/icons/features.svg" width="20" height="20" align="center" /> Key Capabilities & Included Content
+### <img src="docs/icons/features.svg" width="20" height="20" align="absmiddle" /> Key Capabilities & Included Content
 
 | Capability | Technical Details |
 | :--- | :--- |
@@ -77,7 +77,7 @@ The result is a **single standalone APK** that functions like a traditional hand
 
 ---
 
-## <img src="docs/icons/compare.svg" width="24" height="24" align="center" /> Comparison with Traditional Private Servers
+## <img src="docs/icons/compare.svg" width="24" height="24" align="absmiddle" /> Comparison with Traditional Private Servers
 
 | Architectural Aspect | Traditional Private Servers | Beatstar-Zero-Server |
 | :--- | :---: | :---: |
@@ -92,9 +92,9 @@ The result is a **single standalone APK** that functions like a traditional hand
 
 ---
 
-## <img src="docs/icons/terminal.svg" width="24" height="24" align="center" /> Quick Start: Building Your Offline Game
+## <img src="docs/icons/terminal.svg" width="24" height="24" align="absmiddle" /> Quick Start: Building Your Offline Game
 
-### <img src="docs/icons/cpu.svg" width="20" height="20" align="center" /> Prerequisites (PC Requirements)
+### <img src="docs/icons/cpu.svg" width="20" height="20" align="absmiddle" /> Prerequisites (PC Requirements)
 
 Building the offline APK requires a computer (Windows, macOS, or Linux) with the following tools installed. Once the APK is built and transferred to your phone, your computer is no longer needed.
 
@@ -111,7 +111,7 @@ Building the offline APK requires a computer (Windows, macOS, or Linux) with the
 > - **Windows**: Download [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools) for `adb`, and download Build-Tools for `zipalign` / `apksigner`. Ensure their paths are added to your environment `PATH`.
 > - **macOS / Linux**: Install via package manager (`brew install android-platform-tools` or `apt install adb zipalign apksigner`).
 
-### <img src="docs/icons/folder.svg" width="20" height="20" align="center" /> Required Game Files
+### <img src="docs/icons/folder.svg" width="20" height="20" align="absmiddle" /> Required Game Files
 
 Users must supply their own legally acquired game files. This repository does not distribute proprietary content.
 
@@ -144,7 +144,7 @@ Users must supply their own legally acquired game files. This repository does no
 
 ---
 
-### <img src="docs/icons/package.svg" width="20" height="20" align="center" /> Build Pipeline
+### <img src="docs/icons/package.svg" width="20" height="20" align="absmiddle" /> Build Pipeline
 
 #### Step 1: Clone Repository & Install Dependencies
 
@@ -204,7 +204,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 ---
 
-## <img src="docs/icons/layers.svg" width="24" height="24" align="center" /> Technical Architecture (For Developers)
+## <img src="docs/icons/layers.svg" width="24" height="24" align="absmiddle" /> Technical Architecture (For Developers)
 
 <details>
 <summary><b>Click to expand architecture diagram</b></summary>
@@ -241,7 +241,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 </details>
 
-### <img src="docs/icons/code.svg" width="20" height="20" align="center" /> Technology Stack
+### <img src="docs/icons/code.svg" width="20" height="20" align="absmiddle" /> Technology Stack
 
 | Layer / Subsystem | Technology | Architectural Function |
 | :--- | :--- | :--- |
@@ -254,7 +254,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 | **Build System** | [Python](https://www.python.org/) + [LIEF](https://lief-project.github.io/) + [apksigner](https://developer.android.com/tools/apksigner) | ELF dependency injection, APK repacking, zipalign, and signing |
 | **Persistence** | Android Scoped Storage + JSON | Local player profile, game preferences, and asset manifest storage |
 
-### <img src="docs/icons/workflow.svg" width="20" height="20" align="center" /> Execution Pipeline (Step-by-Step)
+### <img src="docs/icons/workflow.svg" width="20" height="20" align="absmiddle" /> Execution Pipeline (Step-by-Step)
 
 1. **ELF Injection**: During the build phase, Python and [LIEF](https://lief-project.github.io/) insert a `DT_NEEDED` entry into the game's `libmain.so`, directing the Android dynamic linker to load `libfrida-gadget.so` at process start.
 
@@ -272,13 +272,13 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 ---
 
-## <img src="docs/icons/heart.svg" width="24" height="24" align="center" /> Support the Solo Developer
+## <img src="docs/icons/heart.svg" width="24" height="24" align="absmiddle" /> Support the Solo Developer
 
 This project is created, developed, and maintained **completely independently by a single engineer** — covering protocol reverse engineering, IL2CPP disassembly, server emulation, and build automation.
 
 If this project has preserved your music experience or assisted your research, voluntary contributions directly fund development hardware, physical test devices, and long-term maintenance.
 
-### <img src="docs/icons/crypto.svg" width="20" height="20" align="center" /> Cryptocurrency (Global, Zero Tracking)
+### <img src="docs/icons/crypto.svg" width="20" height="20" align="absmiddle" /> Cryptocurrency (Global, Zero Tracking)
 
 *Decentralized, zero tracking, globally accessible.*
 
@@ -288,7 +288,7 @@ If this project has preserved your music experience or assisted your research, v
 | **Bitcoin (BTC)** | Native SegWit | `bc1qparlexsolodeveloperhardwarefund` |
 | **Ethereum (ETH)** | ERC-20 | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
 
-### <img src="docs/icons/bank.svg" width="20" height="20" align="center" /> Direct Banking & Regional Transfers
+### <img src="docs/icons/bank.svg" width="20" height="20" align="absmiddle" /> Direct Banking & Regional Transfers
 
 - 💳 **T-Bank Money Collection** *(Russia & CIS / SBP & Cards)*: [www.tbank.ru/cf/9YuuZydrQlI](https://www.tbank.ru/cf/9YuuZydrQlI)  
   *Direct 1-click transfer via Fast Payments System (SBP) or bank card.*
@@ -299,7 +299,7 @@ If this project has preserved your music experience or assisted your research, v
 
 ---
 
-## <img src="docs/icons/shield.svg" width="24" height="24" align="center" /> Legal & Fair Use Disclaimer
+## <img src="docs/icons/shield.svg" width="24" height="24" align="absmiddle" /> Legal & Fair Use Disclaimer
 
 This project is distributed under the [MIT License](LICENSE) and is intended **solely for educational research and game preservation**.
 
@@ -315,7 +315,7 @@ This project is distributed under the [MIT License](LICENSE) and is intended **s
 
 ---
 
-## <img src="docs/icons/award.svg" width="24" height="24" align="center" /> Credits & Acknowledgments
+## <img src="docs/icons/award.svg" width="24" height="24" align="absmiddle" /> Credits & Acknowledgments
 
 This project builds upon the valuable research of the open-source and modding community:
 
@@ -330,7 +330,7 @@ This project builds upon the valuable research of the open-source and modding co
 
 ---
 
-<div align="center">
+<div align="absmiddle">
 
 **Released under the [MIT License](LICENSE)**
 
