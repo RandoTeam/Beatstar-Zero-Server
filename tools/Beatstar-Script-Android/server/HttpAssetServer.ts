@@ -321,7 +321,9 @@ export class HttpAssetServer {
           const firstMapKey = Object.keys(unityCacheMap as Record<string, string>)[0];
           const firstRelPath = (unityCacheMap as Record<string, string>)[firstMapKey];
           if (firstRelPath) {
+            const cacheDir = StorageManager.getCacheDir();
             const dummyPaths = [
+              `${cacheDir}/UnityCache/Shared/${firstRelPath}`,
               `${baseDir}/UnityCache/Shared/${firstRelPath}`,
               `${appFilesDir}/UnityCache/Shared/${firstRelPath}`,
               `${StorageManager.getStorageDir()}/UnityCache/Shared/${firstRelPath}`,

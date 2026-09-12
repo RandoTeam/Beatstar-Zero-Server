@@ -19,7 +19,7 @@ interface Settings {
   aColor?: Color;
   bColor?: Color;
   logErrors?: string;
-  fps?: number;
+  fps?: number | "auto";
   offline?: string;
   fakeVersion?: string;
 }
@@ -30,6 +30,7 @@ class SettingsReader {
     serverPort: 3000,
     serverExpressPort: 5000,
     graphics: "high_120",
+    fps: "auto",
     offline: "true",
     loadScript: "true",
   };
@@ -58,6 +59,19 @@ class SettingsReader {
   getSetting<K extends keyof Settings>(setting: K): Settings[K] {
     if (!this.initialized) this.init();
     return this.settings?.[setting];
+  }
+
+  setSetting<K extends keyof Settings>(setting: K, value: Settings[K]) {
+    if (!this.initialized) this.init();
+    this.settings[setting] = value;
+    try {
+      const storageDir = StorageManager.getStorageDir();
+      const settingsPath = `${storageDir}/settings.json`;
+      DeviceFs.writeFileSync(settingsPath, JSON.stringify(this.settings, null, 2));
+      Logger.log(`[SettingsReader] Saved setting ${String(setting)} = ${JSON.stringify(value)}`);
+    } catch (e: any) {
+      Logger.log(`[SettingsReader] Save error: ${e.message}`);
+    }
   }
 }
 

@@ -164,6 +164,18 @@ export function hookDeviceSettings(): void {
             if (rawScores && !rawScores.isNull()) {
               try { rawScores.field("cachedValue").value = false; } catch (e) {}
             }
+
+            const nextLang = this.field("NextLanguageAfterRestart")?.value;
+            if (nextLang && !nextLang.isNull()) {
+              try {
+                const cachedVal = nextLang.field("cachedValue")?.value;
+                const str = cachedVal ? cachedVal.toString() : "";
+                if (str === "ru" || str.toLowerCase().indexOf("ru") !== -1) {
+                  Logger.log(`[hookDeviceSettings] Resetting NextLanguageAfterRestart from '${str}' to 'en'`);
+                  nextLang.field("cachedValue").value = Il2Cpp.string("en");
+                }
+              } catch (e) {}
+            }
           } catch (e: any) {
             Logger.log(`[hookDeviceSettings] RefreshCaches cleanup error: ${e.message}`);
           }

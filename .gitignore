@@ -1,11 +1,13 @@
 # Build artifacts & Binaries
 dist/*.apk
+dist/*.idsig
 input/*.apk
 assets_cache/*
 !assets_cache/PUT_UNITYCACHE_HERE.txt
 tools/Beatstar-Script-Android/node_modules/
 tools/Beatstar-Script-Android/file.js
 tools/Beatstar-Script-Android/libfrida-gadget.script.so
+tools/Beatstar-Script-Android/libfrida-gadget.config.so
 tools/binaries/libfrida-gadget.so
 __pycache__/
 *.log

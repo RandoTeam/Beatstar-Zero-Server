@@ -31,6 +31,7 @@ import { HttpAssetServer } from "../server/HttpAssetServer.js";
 import { hardenOffline } from "../utilities/OfflineHarden.js";
 import { hookDeviceSettings } from "../customs/hookDeviceSettings.js";
 import { songNameHack } from "../hacks/songName.js";
+import { hookLanguage } from "../hacks/hookLanguage.js";
 
 rpc.exports = {
   init(stage, parameters) {
@@ -118,7 +119,11 @@ Il2Cpp.perform(async () => {
     Logger.log("[Init] Disabling developer debug mode & text overrides");
     hookDeviceSettings();
 
-    // 7.2. Hook song metadata localization
+    // 7.2. Hook language guards (sanitize PlayerPrefs, hide Russian from dialog, prevent font deadlock)
+    Logger.log("[Init] Hooking language guards");
+    hookLanguage();
+
+    // 7.3. Hook song metadata localization
     Logger.log("[Init] Hooking song titles & artists localization");
     songNameHack();
 

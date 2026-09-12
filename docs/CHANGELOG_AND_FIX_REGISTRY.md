@@ -8,6 +8,25 @@ Whenever the user asks to record, capture, or analyze logs, the agent must colle
 
 ... [Truncated rules] ...
 
+## 2026-09-12 13:38 - Multi-Rate FPS Selector & Russian Font Deadlock Protection Hook
+
+**1. Multi-Rate FPS Selector in Support Dialog (`hacks/hookSupportButton.ts`)**:
+- Replaced `Array.newInstance` reflection with native Frida Java array `Java.array("java.lang.CharSequence", jLabels)` with fallback.
+- Bound Support button (`OptionsDialog.SupportButtonPressed`) to native Android `AlertDialog` with FPS presets: Auto (device refresh rate), 30, 60, 90, 120, 144, 165, Uncapped.
+- Verified on OnePlus Pad 2 (144Hz screen): Successfully applies `Application.set_targetFrameRate` and `FlamingoScalingModuleTemplate` at runtime.
+
+**2. Russian Language Font Deadlock Guard (`hacks/hookLanguage.ts` & `customs/hookDeviceSettings.ts`)**:
+- **Root Cause**: Selecting Russian triggered CMS request for `Commissioner-Light SDF` font bundle (`e1bfbefb75b6a4f0d878792fd102405f`). Because the font asset is absent in offline storage, `LocalisedFonts.LoadLocalisedFonts` coroutine deadlocked waiting for `loadingCount > 0`, freezing game boot at 50% loading.
+- **PlayerPrefs Sanitization**: Intercepted `UnityEngine.PlayerPrefs.GetString` and `SetString` for `NextLanguageAfterRestart` to redirect `ru` to `en`.
+- **DeviceSettings Cache Reset**: Reset `NextLanguageAfterRestart.cachedValue` from `ru` to `en` during `DeviceSettings.RefreshCaches`.
+- **UI Dialog Filter**: Intercepted `LanguageSelectDialog.AddSetting` and `MarketingLanguageSelectDialog.AddSetting` to skip `id === "ru"`.
+- **Runtime Guard**: Intercepted `LocalisationSystem.SetNewLanguage` to block switches to `ru` with user toast notification.
+- **Font Requirement Safeguard**: Intercepted `LocalisedFonts.GetFontAssetsRequiredForLanguage` for `ru` to clear required assets and prevent coroutine deadlock.
+
+**3. Verified Build & Clean Install**:
+- Built APK: `dist/Beatstar-Offline-arm64.apk` (1,694,412,635 bytes, SHA-256: `4d4347c95824d48139e788beae3dcd467540e7b5789d356eedcec0ae0c02918f`).
+- Clean-installed and launched: booted cleanly to MainMenu in 12.4s.
+
 ## 2026-09-12 12:39 - README Enhancements: TOC, Donate Anchor, Target APK Version & Built-in 120 FPS
 
 **Documentation & Navigation Polish**:

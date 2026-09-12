@@ -65,6 +65,44 @@ class Device {
       console.log("Failed to show toast");
     }
   }
+
+  static getDisplayRefreshRate(): number {
+    let rate = 60;
+    try {
+      if (Java.available) {
+        Java.perform(() => {
+          try {
+            const app = Java.use("android.app.ActivityThread").currentApplication();
+            if (app) {
+              const windowManager = Java.cast(
+                app.getSystemService("window"),
+                Java.use("android.view.WindowManager")
+              );
+              const display = windowManager.getDefaultDisplay();
+              const r = display.getRefreshRate();
+              if (r > 0) {
+                rate = Math.round(r);
+              }
+            }
+          } catch (e) {
+            try {
+              const UnityPlayer = Java.use("com.unity3d.player.UnityPlayer");
+              const activity = UnityPlayer.currentActivity.value;
+              if (activity) {
+                const windowManager = activity.getWindowManager();
+                const display = windowManager.getDefaultDisplay();
+                const r = display.getRefreshRate();
+                if (r > 0) {
+                  rate = Math.round(r);
+                }
+              }
+            } catch (e2) {}
+          }
+        });
+      }
+    } catch (e) {}
+    return rate || 60;
+  }
 }
 
 export default Device;
