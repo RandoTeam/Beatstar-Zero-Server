@@ -8,6 +8,73 @@ Whenever the user asks to record, capture, or analyze logs, the agent must colle
 
 ... [Truncated rules] ...
 
+## 2026-09-12 12:14 - Documentation Polish: Emoji Removal, TON Token Removal & Legal Review
+
+**Documentation & Clean Presentation Refinements**:
+1. **Removed all emojis from subsection and section titles** in `github_export/README.md` and `github_export/DONATION.md` for clean, professional technical presentation.
+2. **Removed TON token** from all donation tables in `README.md`, `DONATION.md`, and root copies (`README_GITHUB.md`, `DONATION.md`). Retained USDT (TRC-20), BTC (Native SegWit), ETH (ERC-20), T-Bank (SBP/Cards), and Kaspi Bank.
+3. **Enhanced PC Requirements & Setup Clarity**: Clarified prerequisites table, download links, and direct ADB pull instructions for device audio cache.
+4. **Legal & Fair Use Verification**: Cites DMCA § 1201(f) (interoperability exception), EU Directive 2009/24/EC Article 6, trademark nominative fair use, strict non-commercial educational scope, and zero proprietary assets/binaries hosted.
+5. **Pushed to GitHub**: Commit `f55a149` pushed to `origin/main` (`RandoTeam/Beatstar-Zero-Server`).
+
+## 2026-09-12 11:56 - Workspace Cleanup, README/DONATION Polish & GitHub Push
+
+**Cleanup — Items Deleted**:
+1. `tools/Beatstar-Private-Server/` — Upstream Node.js standalone server (Express + Prisma). NOT used by our in-process engine. **Primary source of confusion.**
+2. `third_party/` — Orphaned duplicate of `github_beatstar/` with stale 715 KB `file.js`
+3. `server/` — Empty directory (0 files)
+4. `dist2/` — Old duplicate build output (1.69 GB freed)
+5. `assets/apk/Beatstar.zip` — Exact byte-for-byte duplicate of `Beatstar.apk` (189.8 MB freed)
+6. `github_export/dist/Beatstar-Offline-arm64.apk` — Redundant APK copy in export (1.69 GB freed)
+7. `github_export/input/Beatstar.apk` — Redundant base APK copy (189.8 MB freed)
+8. Root log dumps: `log.txt`, `logcat_live.txt`, `logcat_live_run.txt`, `logcat_live_run2.txt`, `logcat_pid_20324.txt`, `logcat_session.txt`
+9. Root device profiles: `profile_current.json`, `pulled_profile.json`, `device_profile.json`, `device_profile_live.json`, `device_settings.json`
+10. `__pycache__/` (root), `tools/__pycache__/`
+
+**Total freed**: ~3.9 GB of redundant files.
+
+**README & DONATION Updates**:
+1. `github_export/README.md` — Complete rewrite with badges (TypeScript, Python, Frida, Android, ARM64, Protobuf, QuickJS, License, Donate), solo developer notice, user-friendly section, tech architecture, donation zones (top+bottom), Quick Start guide
+2. `github_export/DONATION.md` — Updated to v2.0 template: USDT TRC-20, TON, BTC, ETH + T-Bank + Kaspi Bank
+3. Root `DONATION.md` and `README_GITHUB.md` synced
+
+**GitHub Push**:
+- Commit `8c31f02` pushed to `RandoTeam/Beatstar-Zero-Server` main branch
+- Author: `Ilia Vlasov <vlasov.rus.mos@gmail.com>`
+- Includes: adapter.js fix (force-added to git), README, DONATION, package-lock.json
+
+## 2026-09-12 00:36 - Fix Curl Error 18: Add Missing StreamHandle Write Methods to @frida/net
+
+**Forensic Root Cause Analysis**:
+1. All CMS `.gz` files (GameConfig, SongConfig, AudioConfig, AssetsPatchConfig, etc.) failed to download with `Curl error 18: transfer closed with X bytes remaining to read`.
+2. HTTP text routes (`/version`, `/info`) worked fine — binary routes crashed.
+3. **Root Cause**: `@frida/net/lib/adapter.js` `StreamHandle` class only implemented `writeBuffer(req, data)`. The `@frida/net/index.js` `createWriteReq` function (line 24441 in file.js) dispatches to `handle.writeLatin1String()`, `handle.writeUtf8String()`, `handle.writeAsciiString()`, `handle.writeUcs2String()`, and `handle.writev()` based on encoding — **none of these existed**.
+4. **Why text routes worked**: In `@frida/http/_http_outgoing.js`, when `res.end(stringData)` is called, headers + body are concatenated into ONE string write, bypassing the multi-chunk cork/uncork path. With binary `Buffer` data, headers go as separate chunk (encoding='latin1') + body as separate chunk (encoding='buffer'), triggering `_write` → `createWriteReq` → `handle.writeLatin1String(req, data)` → TypeError → socket destroyed → Curl error 18.
+5. **Key mechanism**: `initSocketHandle` (line 24298-24299 in file.js: `if (!self._handle.writev) self._writev = null;`) disables Socket `_writev`, so `clearBuffer` calls `_write` for each chunk individually. Each `_write` → `createWriteReq` → switch on encoding → `writeLatin1String` → undefined → crash.
+
+**Modifications & Fixes Applied**:
+1. `tools/Beatstar-Script-Android/node_modules/@frida/net/lib/adapter.js` (lines 179-245):
+   - **Old**: Only `writeBuffer(req, data)` method (11 lines), using raw `data.buffer` (pool corruption bug).
+   - **New**: Added 6 methods:
+     - `writeLatin1String(req, data)` → `this.writeBuffer(req, Buffer.from(data, 'latin1'))`
+     - `writeUtf8String(req, data)` → `this.writeBuffer(req, Buffer.from(data, 'utf8'))`
+     - `writeAsciiString(req, data)` → `this.writeBuffer(req, Buffer.from(data, 'ascii'))`
+     - `writeUcs2String(req, data)` → `this.writeBuffer(req, Buffer.from(data, 'ucs2'))`
+     - `writev(req, chunks)` → concatenates all chunks into single Buffer → `this.writeBuffer(req, combined)`
+     - `shutdown(req)` → graceful connection close
+   - **Fix `writeBuffer`**: Changed `data.buffer` → `data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)` to avoid ArrayBuffer pool corruption.
+2. `github_export/tools/Beatstar-Script-Android/node_modules/@frida/net/lib/adapter.js`:
+   - Identical fix applied for standalone GitHub repository portability.
+3. Both `file.js` bundles recompiled:
+   - Main: 5,381,966 bytes (was 5,380,230 — +1,736 bytes from new methods)
+   - GitHub: 5,381,641 bytes
+
+**Evidence (from PID 28421 logcat on Xiaomi MI 8)**:
+```
+09-11 23:51:01.090 V/beatstar(28421): [HttpAssetServer] GET /cms/GameConfig.gz (bundleName: gameconfig.gz)
+09-11 23:51:01.111 E/Unity   (28421): Curl error 18: transfer closed with 90440 bytes remaining to read
+```
+
 ## 2026-09-11 23:40 - BitClone Offline: 100% Identical Forensic Recovery to Working Dump & On-Device Validation
 
 **Forensic Root Cause Analysis**:
