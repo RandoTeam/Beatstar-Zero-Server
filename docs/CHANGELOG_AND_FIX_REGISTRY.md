@@ -8,6 +8,13 @@ Whenever the user asks to record, capture, or analyze logs, the agent must colle
 
 ... [Truncated rules] ...
 
+## 2026-09-12 12:33 - Optical Vertical Alignment for Heading Icons
+
+**Typography Alignment Fix**:
+1. **HTML Attribute Fix**: Replaced invalid `align="center"` on `<img>` tags with standard browser `align="absmiddle"` (which activates `vertical-align: middle` in Chromium, Gecko, and WebKit rendering engines).
+2. **Optical SVG ViewBox Offset**: Offset internal SVG `viewBox` coordinates from `0 0 24 24` to `0 2.5 24 24` across all 15 vector icons in `docs/icons/`. This lifts the vector artwork by 2.5px to align with the optical midpoint of uppercase heading characters ("W", "B", "Q", "A").
+3. **Pushed to GitHub**: Commit `47fb530` pushed to `origin/main` (`RandoTeam/Beatstar-Zero-Server`).
+
 ## 2026-09-12 12:24 - Vector SVG Heading Icons & Body Emoji Restoration
 
 **Visual & Typography Enhancement**:
