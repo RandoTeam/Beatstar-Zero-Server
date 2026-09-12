@@ -1,4 +1,4 @@
-<div align="absmiddle">
+<div align="center">
 
 # <img src="docs/icons/gamepad.svg" width="34" height="34" align="absmiddle" /> Beatstar-Zero-Server
 
@@ -330,7 +330,7 @@ This project builds upon the valuable research of the open-source and modding co
 
 ---
 
-<div align="absmiddle">
+<div align="center">
 
 **Released under the [MIT License](LICENSE)**
 
