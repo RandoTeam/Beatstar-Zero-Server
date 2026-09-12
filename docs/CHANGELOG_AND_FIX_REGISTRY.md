@@ -8,6 +8,16 @@ Whenever the user asks to record, capture, or analyze logs, the agent must colle
 
 ... [Truncated rules] ...
 
+## 2026-09-12 12:39 - README Enhancements: TOC, Donate Anchor, Target APK Version & Built-in 120 FPS
+
+**Documentation & Navigation Polish**:
+1. **Interactive Quick-Jump Table of Contents**: Added a centered navigation bar in the header linking to Overview, Features, Comparison, Quick Start, Prerequisites, Game Files, Build Guide, Architecture, Support & Donate, and Legal.
+2. **On-Page Donation Anchor**: Updated top donate badge and solo developer callout to jump directly to `<a id="support-the-solo-developer"></a>` on the same page.
+3. **Flexible Track Indexing Guidance**: Clarified that the engine dynamically indexes whatever valid UnityCache bundles are provided (typically 1,000+ up to 1,260+ songs).
+4. **Target APK Version & Specifications**: Added explicit requirements: Beatstar v36.1.4 (Build 9545), ARM64-v8a architecture only, clean official APKs, and how to extract base.apk from `.xapk`/`.apks`.
+5. **Built-in 120 FPS Clarification**: Documented that 120 FPS is unlocked natively via in-process hook (`hacks/graphics.ts`), requiring zero external mod APKs.
+6. **Pushed to GitHub**: Commit `caa175a` pushed to `origin/main` (`RandoTeam/Beatstar-Zero-Server`).
+
 ## 2026-09-12 12:36 - Container Div Center Alignment Restoration
 
 **Layout Correction**:
