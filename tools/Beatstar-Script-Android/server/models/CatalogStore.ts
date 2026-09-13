@@ -30,8 +30,12 @@ export class CatalogStore {
     try {
       if (manifestData && Array.isArray((manifestData as any).songs)) {
         const missingIds = [990];
-        this.songs = ((manifestData as any).songs as CatalogSong[]).filter((s: any) => !missingIds.includes(s.id));
-        Logger.log(`[CatalogStore] Loaded ${this.songs.length} valid songs from static manifestData (Filtered ${missingIds.length} broken tracks)`);
+        this.songs = ((manifestData as any).songs as CatalogSong[]).filter(
+          (s: any) => !missingIds.includes(s.id) && s.id < 20000
+        );
+        Logger.log(
+          `[CatalogStore] Loaded ${this.songs.length} valid official songs from static manifestData (Filtered broken tracks and phantom customs)`
+        );
       }
     } catch (e: any) {
       Logger.log(`[CatalogStore] Error parsing static manifest: ${e.message}`);
@@ -45,8 +49,12 @@ export class CatalogStore {
         const data = JSON.parse(raw);
         if (Array.isArray(data.songs) && data.songs.length > 0) {
           const missingIds = [990];
-          this.songs = data.songs.filter((s: any) => !missingIds.includes(s.id));
-          Logger.log(`[CatalogStore] Loaded ${this.songs.length} valid songs from ${manifestPath}`);
+          this.songs = data.songs.filter(
+            (s: any) => !missingIds.includes(s.id) && s.id < 20000
+          );
+          Logger.log(
+            `[CatalogStore] Loaded ${this.songs.length} valid official songs from ${manifestPath}`
+          );
         }
       }
     } catch (e: any) {}

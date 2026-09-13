@@ -73,7 +73,7 @@ export class ProfileStore {
     avatar: 1,
     banner: 1,
     starCount: 0,
-    diamonds: 67025,
+    diamonds: 999,
     beatCoins: 150,
     selectedBeatmapId: 1,
     level: 30,
@@ -117,9 +117,9 @@ export class ProfileStore {
     return `${StorageManager.getStorageDir()}/profile.json`;
   }
 
-  // Base star count to satisfy all Journey requirements on fresh profiles.
-  // Actual stars from gameplay are added on top of this floor.
-  private static BASE_STAR_COUNT = 5000;
+  // Base star count on fresh profiles (0 stars for clean start).
+  // Actual stars from gameplay are added dynamically on top.
+  private static BASE_STAR_COUNT = 0;
 
   private static calculateStarsFromScores(): number {
     let stars = this.BASE_STAR_COUNT;
@@ -137,6 +137,22 @@ export class ProfileStore {
   static getTotalStars(): number {
     this.load();
     return this.calculateStarsFromScores();
+  }
+
+  static getHighestGradeCounts(): { grade_id: number; count: number }[] {
+    this.load();
+    const counts = new Map<number, number>();
+    this.scores.forEach((s) => {
+      const g = s.highestGrade;
+      if (g && g >= 6 && g <= 11) {
+        counts.set(g, (counts.get(g) || 0) + 1);
+      }
+    });
+    const result: { grade_id: number; count: number }[] = [];
+    counts.forEach((count, grade_id) => {
+      result.push({ grade_id, count });
+    });
+    return result;
   }
 
   static load(): void {

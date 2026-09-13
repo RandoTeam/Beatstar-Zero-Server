@@ -104,7 +104,7 @@ export function hookNameChange() {
       try {
         ProfileStore.load();
         ProfileStore.setUsername(newName);
-        const currentDiamonds = ProfileStore.getProfile().diamonds ?? 67025;
+        const currentDiamonds = ProfileStore.getProfile().diamonds ?? 999;
         ProfileStore.setDiamonds(Math.max(0, currentDiamonds - 1));
         ProfileStore.save();
         Logger.log(`[hookNameChange] ProfileStore updated and saved to profile.json!`);

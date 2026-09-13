@@ -196,6 +196,21 @@ export const hardenOffline = () => {
             Logger.log("[OfflineHarden] UserBeatmaps.PopulateValidationNumbers guarded.");
           }
         }
+        // Guard ShufflePlayController.RefreshNextBeatmaps against collection enumeration exceptions
+        const shufflePlayClass = ClassResolver.findClass("ShufflePlayController");
+        if (shufflePlayClass) {
+          const refreshMethod = ClassResolver.tryMethod(shufflePlayClass, "RefreshNextBeatmaps", 0);
+          if (refreshMethod) {
+            refreshMethod.implementation = function (this: Il2Cpp.Object): void {
+              try {
+                refreshMethod.bind(this).invoke();
+              } catch (e: any) {
+                Logger.log(`[OfflineHarden] Safely guarded ShufflePlayController.RefreshNextBeatmaps: ${e.message}`);
+              }
+            };
+            Logger.log("[OfflineHarden] ShufflePlayController.RefreshNextBeatmaps guarded.");
+          }
+        }
 
 
         // Guard LiveOpsLeaderboardEvent against segment index out of bounds
@@ -249,6 +264,440 @@ export const hardenOffline = () => {
             };
           }
           Logger.log("[OfflineHarden] SongLeaderboardEvent_MainElement guarded via ClassResolver.");
+        }
+
+        // Fix EventsScreen and SocialScreen (Hub) zombie overlay bug and disable unused tabs
+        try {
+          let cachedEventsScreen: Il2Cpp.Object | null = null;
+          let cachedEventsController: Il2Cpp.Object | null = null;
+          let cachedSocialScreen: Il2Cpp.Object | null = null;
+          let cachedSocialController: Il2Cpp.Object | null = null;
+
+          const ensureEventsScreenHidden = () => {
+            try {
+              let screen = cachedEventsScreen;
+              const eventsScreenClass = ClassResolver.findClass("EventsScreen");
+              if ((!screen || screen.isNull()) && eventsScreenClass) {
+                const instances = Il2Cpp.gc.choose(eventsScreenClass);
+                if (instances && instances.length > 0 && !instances[0].isNull()) {
+                  screen = instances[0];
+                  cachedEventsScreen = screen;
+                }
+              }
+
+              if (screen && !screen.isNull()) {
+                // 1. Stop all active animations & coroutines (e.g. PlayTransitionInFlow)
+                try {
+                  const stopAll = screen.class.method("StopAllCoroutines");
+                  if (stopAll) stopAll.bind(screen).invoke();
+                } catch (e) {}
+
+                // 2. Suppress canvas visuals & raycasts immediately
+                try {
+                  const visuals = screen.field("screenVisuals")?.value as Il2Cpp.Object;
+                  if (visuals && !visuals.isNull()) {
+                    const setAlpha = visuals.class.method("set_alpha");
+                    if (setAlpha) setAlpha.bind(visuals).invoke(0.0);
+                    const setInteractable = visuals.class.method("set_interactable");
+                    if (setInteractable) setInteractable.bind(visuals).invoke(false);
+                    const setRaycasts = visuals.class.method("set_blocksRaycasts");
+                    if (setRaycasts) setRaycasts.bind(visuals).invoke(false);
+                  }
+                } catch (e) {}
+
+                // 3. Disable display canvas
+                try {
+                  const displayCanvas = screen.field("displayCanvas")?.value as Il2Cpp.Object;
+                  if (displayCanvas && !displayCanvas.isNull()) {
+                    const setEnabled = displayCanvas.class.method("set_enabled");
+                    if (setEnabled) setEnabled.bind(displayCanvas).invoke(false);
+                  }
+                } catch (e) {}
+
+                // 4. Disable background blur if active
+                try {
+                  const disableBlur = ClassResolver.tryMethod(screen.class, "DisableBackgroundBlur", 0);
+                  if (disableBlur) disableBlur.bind(screen).invoke();
+                } catch (e) {}
+
+                // 5. Deactivate GameObject so it stops rendering completely
+                try {
+                  const getGo = screen.class.method("get_gameObject");
+                  if (getGo) {
+                    const go = getGo.bind(screen).invoke() as Il2Cpp.Object;
+                    if (go && !go.isNull()) {
+                      const setActive = go.class.method("SetActive");
+                      if (setActive) setActive.bind(go).invoke(false);
+                    }
+                  }
+                } catch (e) {}
+
+                // 6. Reset State to Inactive (2) so UIScreen.Enter allows future re-entry
+                try {
+                  const setState = ClassResolver.tryMethod(screen.class, "set_State", 1);
+                  if (setState) {
+                    setState.bind(screen).invoke(2);
+                  } else {
+                    const stateField = screen.field("<State>k__BackingField");
+                    if (stateField) stateField.value = 2;
+                  }
+                } catch (e) {
+                  try {
+                    const stateField = screen.field("<State>k__BackingField");
+                    if (stateField) stateField.value = 2;
+                  } catch (e2) {}
+                }
+
+                Logger.log("[OfflineHarden] EventsScreen safely hidden and synchronized to Inactive state.");
+              }
+
+              if (cachedEventsController && !cachedEventsController.isNull()) {
+                try {
+                  const activeField = cachedEventsController.field("<Active>k__BackingField");
+                  if (activeField) activeField.value = false;
+                } catch (e) {}
+              }
+            } catch (err: any) {
+              Logger.log(`[OfflineHarden] ensureEventsScreenHidden error: ${err.message}`);
+            }
+          };
+
+          const ensureSocialScreenHidden = () => {
+            try {
+              let screen = cachedSocialScreen;
+              const socialScreenClass = ClassResolver.findClass("SocialScreen");
+              if ((!screen || screen.isNull()) && socialScreenClass) {
+                const instances = Il2Cpp.gc.choose(socialScreenClass);
+                if (instances && instances.length > 0 && !instances[0].isNull()) {
+                  screen = instances[0];
+                  cachedSocialScreen = screen;
+                }
+              }
+
+              if (screen && !screen.isNull()) {
+                // 1. Stop all active animations & coroutines
+                try {
+                  const stopAll = screen.class.method("StopAllCoroutines");
+                  if (stopAll) stopAll.bind(screen).invoke();
+                } catch (e) {}
+
+                // 2. Disable display canvas (UIScreen base)
+                try {
+                  const displayCanvas = screen.field("displayCanvas")?.value as Il2Cpp.Object;
+                  if (displayCanvas && !displayCanvas.isNull()) {
+                    const setEnabled = displayCanvas.class.method("set_enabled");
+                    if (setEnabled) setEnabled.bind(displayCanvas).invoke(false);
+                  }
+                } catch (e) {}
+
+                // 3. Disable background blur if active
+                try {
+                  const ftueTabBlur = screen.field("ftueTabBlur")?.value as Il2Cpp.Object;
+                  if (ftueTabBlur && !ftueTabBlur.isNull()) {
+                    const getGo = ftueTabBlur.class.method("get_gameObject");
+                    if (getGo) {
+                      const go = getGo.bind(ftueTabBlur).invoke() as Il2Cpp.Object;
+                      if (go && !go.isNull()) {
+                        const setActive = go.class.method("SetActive");
+                        if (setActive) setActive.bind(go).invoke(false);
+                      }
+                    }
+                  }
+                } catch (e) {}
+
+                // 4. Deactivate GameObject so it stops rendering completely
+                try {
+                  const getGo = screen.class.method("get_gameObject");
+                  if (getGo) {
+                    const go = getGo.bind(screen).invoke() as Il2Cpp.Object;
+                    if (go && !go.isNull()) {
+                      const setActive = go.class.method("SetActive");
+                      if (setActive) setActive.bind(go).invoke(false);
+                    }
+                  }
+                } catch (e) {}
+
+                // 5. Reset State to Inactive (2)
+                try {
+                  const setState = ClassResolver.tryMethod(screen.class, "set_State", 1);
+                  if (setState) {
+                    setState.bind(screen).invoke(2);
+                  } else {
+                    const stateField = screen.field("<State>k__BackingField");
+                    if (stateField) stateField.value = 2;
+                  }
+                } catch (e) {
+                  try {
+                    const stateField = screen.field("<State>k__BackingField");
+                    if (stateField) stateField.value = 2;
+                  } catch (e2) {}
+                }
+
+                Logger.log("[OfflineHarden] SocialScreen safely hidden and synchronized to Inactive state.");
+              }
+
+              if (cachedSocialController && !cachedSocialController.isNull()) {
+                try {
+                  const activeField = cachedSocialController.field("<Active>k__BackingField");
+                  if (activeField) activeField.value = false;
+                } catch (e) {}
+              }
+            } catch (err: any) {
+              Logger.log(`[OfflineHarden] ensureSocialScreenHidden error: ${err.message}`);
+            }
+          };
+
+          // Cache EventsScreen instance when loaded / started / transitioned in
+          const eventsScreenClass = ClassResolver.findClass("EventsScreen");
+          if (eventsScreenClass) {
+            const startMethod = ClassResolver.tryMethod(eventsScreenClass, "Start", 0);
+            if (startMethod) {
+              startMethod.implementation = function (this: Il2Cpp.Object): void {
+                cachedEventsScreen = this;
+                try {
+                  startMethod.bind(this).invoke();
+                } catch (e) {}
+              };
+            }
+
+            const transitionInMethod = ClassResolver.tryMethod(eventsScreenClass, "TransitionIn", 0);
+            if (transitionInMethod) {
+              transitionInMethod.implementation = function (this: Il2Cpp.Object): any {
+                cachedEventsScreen = this;
+                try {
+                  return transitionInMethod.bind(this).invoke();
+                } catch (e) {
+                  return null;
+                }
+              };
+            }
+          }
+
+          // Cache SocialScreen instance and ensure it stays suppressed and inactive
+          const socialScreenClass = ClassResolver.findClass("SocialScreen");
+          if (socialScreenClass) {
+            const startMethod = ClassResolver.tryMethod(socialScreenClass, "Start", 0);
+            if (startMethod) {
+              startMethod.implementation = function (this: Il2Cpp.Object): void {
+                cachedSocialScreen = this;
+                ensureSocialScreenHidden();
+              };
+            }
+
+            const transitionInMethod = ClassResolver.tryMethod(socialScreenClass, "TransitionIn", 0);
+            if (transitionInMethod) {
+              transitionInMethod.implementation = function (this: Il2Cpp.Object): any {
+                cachedSocialScreen = this;
+                ensureSocialScreenHidden();
+                try {
+                  return transitionInMethod.bind(this).invoke();
+                } catch (e) {
+                  return null;
+                }
+              };
+            }
+          }
+
+          // Disable LiveopsNewsFeedFlowListFiller from refreshing or loading
+          const newsFillerClass = ClassResolver.findClass("LiveopsNewsFeedFlowListFiller");
+          if (newsFillerClass) {
+            const canRefreshMethod = ClassResolver.tryMethod(newsFillerClass, "get_CanRefresh", 0);
+            if (canRefreshMethod) {
+              canRefreshMethod.implementation = function (): boolean {
+                return false;
+              };
+              Logger.log("[OfflineHarden] LiveopsNewsFeedFlowListFiller.get_CanRefresh hooked (always false).");
+            }
+          }
+
+          // Suppress notification badges ("roosters") on Shop tab and Hub tab
+          const socialRoosterClass = ClassResolver.findClass("SocialNewRequestsRooster");
+          if (socialRoosterClass) {
+            const getRoosterCountMethod = ClassResolver.tryMethod(socialRoosterClass, "GetRoosterCount", 0);
+            if (getRoosterCountMethod) {
+              getRoosterCountMethod.implementation = function (): number {
+                return 0;
+              };
+              Logger.log("[OfflineHarden] SocialNewRequestsRooster.GetRoosterCount hooked (always 0).");
+            }
+          }
+
+          const shopRoostersClass = ClassResolver.findClass("ShopScreenRoosters");
+          if (shopRoostersClass) {
+            const getShopCountMethod = ClassResolver.tryMethod(shopRoostersClass, "GetShopTabRoosterCounter", 0);
+            if (getShopCountMethod) {
+              getShopCountMethod.implementation = function (): number {
+                return 0;
+              };
+              Logger.log("[OfflineHarden] ShopScreenRoosters.GetShopTabRoosterCounter hooked (always 0).");
+            }
+
+            const getFreeGemsMethod = ClassResolver.tryMethod(shopRoostersClass, "GetShopTabFreeGemsRoosterCount", 0);
+            if (getFreeGemsMethod) {
+              getFreeGemsMethod.implementation = function (): number {
+                return 0;
+              };
+              Logger.log("[OfflineHarden] ShopScreenRoosters.GetShopTabFreeGemsRoosterCount hooked (always 0).");
+            }
+          }
+
+          // Cache controller & ensure cleanup on End()
+          const eventsCtrlClass = ClassResolver.findClass("EventsScreenController");
+          if (eventsCtrlClass) {
+            const endMethod = ClassResolver.tryMethod(eventsCtrlClass, "End", 0);
+            if (endMethod) {
+              endMethod.implementation = function (this: Il2Cpp.Object): void {
+                cachedEventsController = this;
+                try {
+                  endMethod.bind(this).invoke();
+                } catch (e: any) {
+                  Logger.log(`[OfflineHarden] EventsScreenController.End invoke warning: ${e.message}`);
+                }
+                ensureEventsScreenHidden();
+              };
+            }
+          }
+
+          const socialCtrlClass = ClassResolver.findClass("SocialScreenController");
+          if (socialCtrlClass) {
+            const endMethod = ClassResolver.tryMethod(socialCtrlClass, "End", 0);
+            if (endMethod) {
+              endMethod.implementation = function (this: Il2Cpp.Object): void {
+                cachedSocialController = this;
+                try {
+                  endMethod.bind(this).invoke();
+                } catch (e: any) {
+                  Logger.log(`[OfflineHarden] SocialScreenController.End invoke warning: ${e.message}`);
+                }
+                ensureSocialScreenHidden();
+              };
+            }
+          }
+
+          // Hook MainMenuModel.set_ActiveTab to safely switch tabs and keep unused tabs clean
+          const mainMenuModelClass = ClassResolver.findClass("MainMenuModel");
+          if (mainMenuModelClass) {
+            const setActiveTabMethod = ClassResolver.tryMethod(mainMenuModelClass, "set_ActiveTab", 1);
+            if (setActiveTabMethod) {
+              setActiveTabMethod.implementation = function (this: Il2Cpp.Object, tab: any): void {
+                try {
+                  setActiveTabMethod.bind(this).invoke(tab);
+                } catch (e: any) {
+                  Logger.log(`[OfflineHarden] MainMenuModel.set_ActiveTab invoke warning: ${e.message}`);
+                }
+                let tabVal: number = -1;
+                try {
+                  if (typeof tab === "number") {
+                    tabVal = tab;
+                  } else if (tab && typeof tab === "object") {
+                    if ("field" in tab && typeof (tab as any).field === "function") {
+                      tabVal = Number((tab as any).field("value__").value);
+                    } else if ("value" in tab) {
+                      tabVal = Number((tab as any).value);
+                    }
+                  }
+                } catch (e) {}
+
+                // Tab 4 is Events (MainMenuModel.Tab.Events = 4).
+                if (tabVal !== 4) {
+                  ensureEventsScreenHidden();
+                }
+                // Tab 5 is Social / Hub (MainMenuModel.Tab.Social = 5).
+                // Always ensure SocialScreen is hidden and inert (both inside Hub and when on any other tab)
+                ensureSocialScreenHidden();
+              };
+            }
+          }
+          Logger.log("[OfflineHarden] EventsScreen and SocialScreen lifecycle hooks registered.");
+        } catch (e: any) {
+          Logger.log(`[OfflineHarden] EventsScreen / SocialScreen hook setup error: ${e.message}`);
+        }
+
+        // Suppress Tour Pass point awards, hide homescreen Tour Pass widget, and hide homescreen event banners
+        try {
+          // 1. Make Season_SeasonCmds.SongEnded a NO-OP so gameplay never awards Tour Points or advances Tour Pass
+          const seasonCmdsClass = ClassResolver.findClass("Season_SeasonCmds");
+          if (seasonCmdsClass) {
+            const songEndedMethod = ClassResolver.tryMethod(seasonCmdsClass, "SongEnded", 2);
+            if (songEndedMethod) {
+              songEndedMethod.implementation = function (): void {
+                // Silenced: do not award Tour Points or advance Tour Pass
+              };
+              Logger.log("[OfflineHarden] Season_SeasonCmds.SongEnded silenced (no Tour Points awarded).");
+            }
+          }
+
+          // Helper to deactivate GameObject
+          const hideGameObject = (instance: Il2Cpp.Object) => {
+            try {
+              const getGo = instance.class.method("get_gameObject");
+              if (getGo) {
+                const go = getGo.bind(instance).invoke() as Il2Cpp.Object;
+                if (go && !go.isNull()) {
+                  const setActive = go.class.method("SetActive");
+                  if (setActive) setActive.bind(go).invoke(false);
+                }
+              }
+            } catch (e) {}
+          };
+
+          // 2. Hide the homescreen "TOUR PASS 0 / 5" widget (SeasonHomeScreenElement)
+          const seasonHomeClass = ClassResolver.findClass("SeasonHomeScreenElement");
+          if (seasonHomeClass) {
+            const startMethod = ClassResolver.tryMethod(seasonHomeClass, "Start", 0);
+            if (startMethod) {
+              startMethod.implementation = function (this: Il2Cpp.Object): void {
+                try {
+                  startMethod.bind(this).invoke();
+                } catch (e) {}
+                hideGameObject(this);
+              };
+            }
+
+            const tryRefresh = ClassResolver.tryMethod(seasonHomeClass, "TryRefresh", 0);
+            if (tryRefresh) {
+              tryRefresh.implementation = function (this: Il2Cpp.Object): void {
+                hideGameObject(this);
+              };
+            }
+            Logger.log("[OfflineHarden] SeasonHomeScreenElement hidden on homescreen.");
+          }
+
+          // 3. Hide the homescreen "EVENT STARTED" banner (SongLeaderboardEvent_PlaySongScreenWidget / PlaySongScreenEventsWidgetAddon)
+          const eventsWidgetAddonClass = ClassResolver.findClass("PlaySongScreenEventsWidgetAddon");
+          if (eventsWidgetAddonClass) {
+            const findEventWidgetMethod = ClassResolver.tryMethod(eventsWidgetAddonClass, "FindEventWidget", 0);
+            if (findEventWidgetMethod) {
+              findEventWidgetMethod.implementation = function (): any {
+                return null;
+              };
+              Logger.log("[OfflineHarden] PlaySongScreenEventsWidgetAddon.FindEventWidget suppressed (returns null).");
+            }
+          }
+
+          const eventWidgetClass = ClassResolver.findClass("SongLeaderboardEvent_PlaySongScreenWidget");
+          if (eventWidgetClass) {
+            const transitionInMethod = ClassResolver.tryMethod(eventWidgetClass, "TransitionIn", 0);
+            if (transitionInMethod) {
+              transitionInMethod.implementation = function (this: Il2Cpp.Object): void {
+                hideGameObject(this);
+              };
+            }
+            Logger.log("[OfflineHarden] SongLeaderboardEvent_PlaySongScreenWidget hidden on homescreen.");
+          }
+
+          const totaliserWidgetClass = ClassResolver.findClass("TotaliserEvent_PlaySongScreenWidget");
+          if (totaliserWidgetClass) {
+            const transitionInMethod = ClassResolver.tryMethod(totaliserWidgetClass, "TransitionIn", 0);
+            if (transitionInMethod) {
+              transitionInMethod.implementation = function (this: Il2Cpp.Object): void {
+                hideGameObject(this);
+              };
+            }
+            Logger.log("[OfflineHarden] TotaliserEvent_PlaySongScreenWidget hidden on homescreen.");
+          }
+        } catch (e: any) {
+          Logger.log(`[OfflineHarden] Tour Pass / Event Widget suppression error: ${e.message}`);
         }
 
         // Guard CustomisationsScreen & ProfileScreenTrackSkinsUI against offline NPE in sorting/populating

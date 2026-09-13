@@ -1,5 +1,6 @@
 const esbuild = require("esbuild");
 const fs = require("fs");
+const path = require("path");
 
 const outfile = "file.js";
 
@@ -86,6 +87,14 @@ async function run() {
   const prod = process.argv.includes("-prod");
   const test = process.argv.includes("-test");
   const agent = process.argv.includes("-agent");
+
+  // Ensure runtime patches (e.g. @frida/net adapter.js) are applied
+  const applyScript = path.join(__dirname, "patches", "apply.js");
+  if (fs.existsSync(applyScript)) {
+    try {
+      require(applyScript);
+    } catch (e) {}
+  }
 
   await build(prod, test, agent);
   let file = fs

@@ -158,7 +158,7 @@ export class HttpAssetServer {
             if (newName) {
               ProfileStore.load();
               ProfileStore.setUsername(newName);
-              const currentDiamonds = ProfileStore.getProfile().diamonds ?? 67025;
+              const currentDiamonds = ProfileStore.getProfile().diamonds ?? 999;
               ProfileStore.setDiamonds(Math.max(0, currentDiamonds - 1));
               Logger.log(`[HttpAssetServer] Processed custom rename request: ${newName}`);
             }

@@ -3,7 +3,8 @@
     "watch": "node_modules/.bin/frida-compile device/device.ts -o script.js -w",
     "build": "node build.js",
     "agent": "node_modules/.bin/frida-compile agent/agent.ts -o script.js -c -w",
-    "debug": "node_modules/.bin/frida-compile agent/debug.ts -o debug.js -c"
+    "debug": "node_modules/.bin/frida-compile agent/debug.ts -o debug.js -c",
+    "postinstall": "node patches/apply.js"
   },
   "dependencies": {
     "@externaladdress4401/beatstar-protobuf": "^1.2.3",

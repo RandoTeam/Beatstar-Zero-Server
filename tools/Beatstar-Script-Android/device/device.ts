@@ -137,7 +137,6 @@ Il2Cpp.perform(async () => {
     Logger.log("[Init] Hooking PlaySongScreenController & ErrorHandling");
     hookPlaySongScreen();
 
-    Device.toast("Beatstar Offline: Ready (120 FPS)");
     Logger.log("[Init] Complete offline initialization finished.");
   } catch (err: any) {
     Logger.log(`[Init] Fatal initialization error: ${err.message}\n${err.stack}`);

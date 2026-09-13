@@ -87,7 +87,7 @@ The result is a **single standalone APK** that functions like a traditional hand
 | 🔄 **Dynamic LiveOps Events** | Tour Pass seasons, Daily Shuffles, and events cycle automatically |
 | 🎨 **Complete Cosmetics** | Track skins, calling cards, profile icons, and emojis unlocked |
 | 🔍 **Built-in Track Search** | Native IL2CPP search filter to find any song by title or artist |
-| 🖥️ **Built-in 120 FPS Unlock** | Native IL2CPP hook unlocks 120 FPS on high-refresh displays — **no third-party mod APK needed** |
+| 🖥️ **Adaptive Display & FPS Selector** | Synchronizes with device display refresh (60/90/120/144/165 Hz). In-game selector (**Settings → Support**) offers 30–165 FPS & Uncapped modes |
 | 🛡️ **Anti-Softlock Protection** | Native IL2CPP guards prevent UI locks, coroutine timeouts, and desyncs |
 
 ---
@@ -227,6 +227,28 @@ adb install dist/Beatstar-Offline-arm64.apk
 > On the **first launch only**, the app will present a sleek loading screen while unpacking embedded offline assets (~1.5 GB) into device storage. This initial bootstrap takes between **1 to 3 minutes** depending on the device storage speed.  
 > **Do not close or force-stop the application during this initial extraction.** Subsequent launches bypass this step and open within seconds.
 
+### <img src="docs/icons/gamepad.svg" width="20" height="20" align="absmiddle" /> In-Game Controls & Adaptive FPS Settings
+
+Beatstar-Zero-Server includes dynamic display refresh synchronization and a custom in-game configuration dialog:
+
+- **Adaptive Screen Refresh (Default: `Auto`)**: The game engine automatically interrogates Android's `Display.getRefreshRate()` to match your device screen's native refresh rate (e.g., 60 Hz, 90 Hz, 120 Hz, 144 Hz, or 165 Hz), delivering perfectly smooth note tracking with zero stutter.
+- **Custom FPS Preset Selector**:
+  1. In the main menu, tap the top-right hamburger menu icon (`☰`).
+  2. Open **Options** (Настройки).
+  3. Tap the **«Support»** (или **«Поддержка»**) button — this button has been repurposed into the offline settings control panel.
+  4. Choose your desired frame rate preset:
+     - **Auto** (matches hardware refresh rate, e.g. 120 Hz / 144 Hz / 165 Hz)
+     - **30 FPS** (battery saver mode)
+     - **60 FPS** (standard rhythm game baseline)
+     - **90 FPS / 120 FPS / 144 FPS / 165 FPS** (high refresh gaming)
+     - **Uncapped (-1)** (unlimited frame rate)
+  5. The setting is applied immediately in real time to both Unity's rendering engine and SpaceApe's motion scaling module, and saved to `settings.json` for future launches.
+
+> [!WARNING]
+> **Internal Developer Track Notice: «Beatstar ingame calibration (Don't remove)»**  
+> In certain game builds and cache archives, the song library may display a Space Ape internal development calibration item titled **`Beatstar ingame calibration (Don't remove)`** (distinguished by a neutral gray vinyl record icon). This entry is a legacy developer testing stub that has no physical audio or beatmap assets.  
+> **Do not attempt to select or play this track.** Attempting to launch it will cause the client to hang indefinitely while waiting for missing asset bundles, requiring you to force-close and restart the game.
+
 ---
 
 ## <img src="docs/icons/layers.svg" width="24" height="24" align="absmiddle" /> Technical Architecture (For Developers)
@@ -260,7 +282,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 │   │  • hookRemoteBundles.ts — Download interception (3,000+ entries)    │   │
 │   │  • hookGameAudio.ts — Wwise audio bank routing                      │   │
 │   │  • hookProfile.ts — Player identity & progression                   │   │
-│   │  • graphics.ts — Unlocked 120 FPS high refresh mode                 │   │
+│   │  • graphics.ts — Adaptive display refresh & custom FPS selector     │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -294,7 +316,7 @@ adb install dist/Beatstar-Offline-arm64.apk
 
 5. **Loopback Redirection**: IL2CPP hooks intercept `EndPointConfig` and direct all network requests to `127.0.0.1`, guaranteeing **no network packets leave the device**.
 
-6. **Offline Hardening & 120 FPS**: Native hooks bypass tutorial blockers, loop live event calendars infinitely, safeguard against `InteractionLocker` soft-locks, and automatically unlock **120 FPS** via `hacks/graphics.ts` without requiring external modding tools.
+6. **Offline Hardening & Adaptive Display Engine**: Native hooks bypass tutorial blockers, loop live event calendars infinitely, safeguard against `InteractionLocker` soft-locks, and dynamically synchronize rendering to the device's native display refresh rate (60/90/120/144/165 Hz). An in-game configuration menu (accessible via **Settings → Support**) allows players to customize target frame rates on the fly.
 
 ---
 

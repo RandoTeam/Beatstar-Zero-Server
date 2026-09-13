@@ -16,8 +16,8 @@ import { Client } from "../Client.js";
 import { Packet } from "../Packet.js";
 import { BaseService } from "./BaseService.js";
 import { ProfileStore } from "../models/ProfileStore.js";
-import missingIds from "../../customs/missingBeatmapIds.json";
 import { CatalogStore } from "../models/CatalogStore.js";
+import officialBeatmaps from "../../customs/officialBeatmaps.json";
 import { LiveOpsEngine } from "../models/LiveOpsEngine.js";
 import { toArray } from "../utilities/toArray.js";
 import allVisuals from "../../customs/allVisualIds.json";
@@ -137,10 +137,10 @@ export class GameService extends BaseService {
           ? songs 
           : songs.filter((s) => profile.unlockedSongIds?.includes(s.id));
 
-        const beatmapsList: any[] = unlockedSongs.map((s) => {
-          const score = ProfileStore.getScore(s.id);
+        const beatmapsList: any[] = (officialBeatmaps as any[]).map((b: any) => {
+          const score = ProfileStore.getScore(b.id) || ProfileStore.getScore(b.songId);
           const entry: any = {
-            template_id: s.id,
+            template_id: b.id,
             BragState: {},
             HighestScore: score?.absoluteScore
               ? {
@@ -161,30 +161,13 @@ export class GameService extends BaseService {
           return entry;
         });
 
-        const existingIds = new Set(unlockedSongs.map((s) => s.id));
-        for (const tid of missingIds) {
-          if (!existingIds.has(tid)) {
-            beatmapsList.push({
-              template_id: tid,
-              BragState: {},
-              HighestScore: {},
-              HighestCheckpoint: 0,
-              HighestStreak: 0,
-              PlayedCount: 0,
-              RewardedSource: 11,
-              Version: 1,
-              absoluteScore: 0,
-            });
-          }
-        }
-
         const totalStars = ProfileStore.getTotalStars();
         const syncRespObj = createSyncResp({
           "{username}": profile.username,
           "{beatmaps}": beatmapsList,
           "{NewsFeedStories}": LiveOpsEngine.getNewsFeedStories(),
           "{starCount}": totalStars,
-          "{diamonds}": profile.diamonds ?? 67025,
+          "{diamonds}": profile.diamonds ?? 999,
           "{selectedBeatmap}": profile.selectedBeatmapId || 1,
           "{time}": Date.now(),
           "{playerCustomizations}": {
@@ -216,10 +199,16 @@ export class GameService extends BaseService {
             ];
 
             profileObj.currencies = [
-              { currency_id: 3, amount: profile.diamonds ?? 67025 },
+              { currency_id: 3, amount: profile.diamonds ?? 999 },
               { currency_id: 5, amount: profile.beatCoins || 150 },
               { currency_id: 7, amount: totalStars },
               { currency_id: 9, amount: 25 },
+            ];
+
+            profileObj.grades = [
+              {
+                highestGrades: ProfileStore.getHighestGradeCounts(),
+              },
             ];
 
             profileObj.playerVisuals = [
@@ -352,7 +341,7 @@ export class GameService extends BaseService {
             // Award gameplay rewards: Beat Coins, genre cards, and Tour Pass points
             ProfileStore.addBeatCoins(15);
             ProfileStore.addCards((audit.song_id % 7) + 1, 2);
-            ProfileStore.addTourPoints(25);
+            // ProfileStore.addTourPoints(25); // Disabled: Tour Pass progression silenced
           } else if (audit.type === RequestType.ShopSystemRefresh) {
             Logger.log("[GameService] Audit: ShopSystemRefresh");
             ProfileStore.refreshShopIfNeeded();
