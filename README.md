@@ -334,7 +334,7 @@ If this project has preserved your music experience or assisted your research, v
 | Asset | Network | Address |
 | :--- | :--- | :--- |
 | **USDT** | TRC-20 | `TY1j2N8x4K7b9vL3mP5qR8sW2tU4xZ6y8A` |
-| **Bitcoin (BTC)** | Native SegWit | `bc1qparlexsolodeveloperhardwarefund` |
+| **Bitcoin (BTC)** | Native SegWit | `bc1qd5s9dwvyvlv320ynluk66zpd0p24knzxrjzwvr` |
 | **Ethereum (ETH)** | ERC-20 | `0xfca2fc261d4f23768a04ec49c3448278cdf17c2b` |
 
 ### <img src="docs/icons/bank.svg" width="20" height="20" align="absmiddle" /> Direct Banking & Regional Transfers
